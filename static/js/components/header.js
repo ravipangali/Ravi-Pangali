@@ -10,17 +10,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelectorAll('.nav-link');
     
+    
     // Mobile menu toggle
     if (mobileMenuButton && mobileMenu) {
         mobileMenuButton.addEventListener('click', function() {
             mobileMenu.classList.toggle('show');
+            // Toggle aria-expanded attribute for accessibility
+            const isExpanded = mobileMenu.classList.contains('show');
+            mobileMenuButton.setAttribute('aria-expanded', isExpanded);
         });
         
         // Close mobile menu when clicking a link
         document.querySelectorAll('.mobile-link').forEach(link => {
             link.addEventListener('click', function() {
                 mobileMenu.classList.remove('show');
+                mobileMenuButton.setAttribute('aria-expanded', false);
             });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target) && mobileMenu.classList.contains('show')) {
+                mobileMenu.classList.remove('show');
+                mobileMenuButton.setAttribute('aria-expanded', false);
+            }
         });
     }
     

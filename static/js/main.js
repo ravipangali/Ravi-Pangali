@@ -27,16 +27,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         await loadScript('/static/js/components/header.js');
         console.log('Header component loaded');
         
-        // Load theme system
-        await loadScript('/static/js/themes/theme-manager.js');
-        await loadScript('/static/js/themes/galaxy.js');
-        console.log('Theme system loaded');
-        
-        // Initialize theme manager
-        if (window.themeManager) {
-            window.themeManager.init();
-        }
-        
         // Initialize page-specific features
         initHomePage();
         

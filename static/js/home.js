@@ -666,13 +666,27 @@ document.addEventListener('DOMContentLoaded', () => {
         
         skillBars.forEach(bar => {
             const width = bar.getAttribute('data-width');
+            if (!width) {
+                console.warn('Skill bar missing data-width attribute:', bar);
+                return;
+            }
+            
+            // Set initial state
+            bar.style.transform = 'scaleX(0)';
+            bar.style.transformOrigin = 'left';
             
             ScrollTrigger.create({
                 trigger: bar,
                 start: 'top 90%',
                 onEnter: () => {
+                    const widthValue = parseFloat(width.replace('%', ''));
+                    if (isNaN(widthValue)) {
+                        console.warn('Invalid width value:', width);
+                        return;
+                    }
+                    
                     gsap.to(bar, {
-                        scaleX: width.replace('%', '') / 100,
+                        scaleX: widthValue / 100,
                         duration: 1.5,
                         ease: 'power3.out'
                     });
@@ -788,22 +802,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ... rest of the code
 
-});
-
-// Animate Skill Bars on Scroll
-const skillBars = document.querySelectorAll('.skill-progress');
-const skillsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const bar = entry.target;
-            bar.style.width = bar.getAttribute('data-width');
-            skillsObserver.unobserve(bar); // Animate only once
-        }
-    });
-}, { threshold: 0.5 });
-
-skillBars.forEach(bar => {
-    skillsObserver.observe(bar);
 });
 
 // Timeline animations (using existing Intersection Observer)
