@@ -1,0 +1,230 @@
+/* Header Styles */
+
+/* Main header container */
+#main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    transition: all 0.3s;
+}
+
+#main-header.scrolled {
+    background-color: rgba(15, 23, 42, 0.8);
+}
+
+/* Navigation styles */
+nav {
+    background-color: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Logo styles */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+}
+
+.logo-icon:hover {
+    transform: rotate(12deg);
+}
+
+/* Navigation links */
+.nav-link {
+    color: #e2e8f0;
+    font-weight: 500;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #3b82f6;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link.active {
+    color: #3b82f6;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Contact button */
+.contact-btn {
+    padding: 0.5rem 1.25rem;
+    background: linear-gradient(to right, #3b82f6, #06b6d4);
+    color: white;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.contact-btn:hover {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Mobile menu styles */
+.mobile-link {
+    display: block;
+    padding: 0.5rem 0;
+}
+
+#mobile-menu {
+    background-color: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 1rem;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+    pointer-events: none;
+}
+
+#mobile-menu.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+/* Theme dropdown */
+#theme-dropdown {
+    background-color: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    position: absolute;
+    z-index: 1000;
+    visibility: hidden; /* Hide it completely initially */
+}
+
+#theme-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    display: block;
+    visibility: visible;
+}
+
+.theme-option {
+    transition: background-color 0.3s;
+}
+
+.theme-option:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Theme direct buttons */
+.theme-direct-btn {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    outline: none;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.theme-direct-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+.theme-direct-btn:active {
+    transform: scale(0.95);
+}
+
+/* Theme button active state */
+.theme-direct-btn.active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #3b82f6;
+}
+
+/* Floating theme switcher */
+#theme-float-toggle {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    z-index: 100;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+#theme-float-toggle:hover {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+}
+
+#theme-float-dropdown {
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    visibility: hidden;
+    z-index: 99;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+#theme-float-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+}
+
+.theme-float-option {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.theme-float-option:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.theme-float-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #3b82f6, #06b6d4);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.theme-float-option.active {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.theme-float-option.active::before {
+    opacity: 1;
+} 

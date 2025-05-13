@@ -1,0 +1,42 @@
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="main-header">
+    <div class="main-container">
+        <nav class="bg-slate-800/80 backdrop-blur-sm flex items-center justify-between px-6 py-4 my-4 rounded-2xl">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-2 group">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center transform transition-transform group-hover:rotate-12 duration-300">
+                    <img src="/static/img/icon.png" alt="RP Logo" class="w-8 h-8">
+                </div>
+                <span class="text-xl font-bold gradient-text">Ravi Pangali</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#hero" class="nav-link relative">Home</a>
+                <a href="#about" class="nav-link relative">About</a>
+                <a href="#projects" class="nav-link relative">Projects</a>
+                <a href="#skills" class="nav-link relative">Skills</a>
+                <a href="#timeline" class="nav-link relative">Experience</a>
+                <a href="#contact" class="contact-btn px-5 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">Contact</a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden flex items-center" id="mobile-menu-button">
+                <svg class="w-6 h-6 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+        
+        <!-- Mobile Navigation -->
+        <div class="md:hidden bg-slate-800/80 backdrop-blur-sm absolute w-[calc(100%-3rem)] left-1/2 -translate-x-1/2 mt-2 py-4 px-6 rounded-2xl opacity-0 pointer-events-none transform -translate-y-10 transition-all duration-300" id="mobile-menu">
+            <div class="flex flex-col space-y-4">
+                <a href="#hero" class="nav-link mobile-link">Home</a>
+                <a href="#about" class="nav-link mobile-link">About</a>
+                <a href="#projects" class="nav-link mobile-link">Projects</a>
+                <a href="#skills" class="nav-link mobile-link">Skills</a>
+                <a href="#timeline" class="nav-link mobile-link">Experience</a>
+                <a href="#contact" class="block px-5 py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg text-white font-medium text-center">Contact</a>
+            </div>
+        </div>
+    </div>
+</header>
