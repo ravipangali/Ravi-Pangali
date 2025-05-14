@@ -1,32 +1,57 @@
 {% extends "base/base.html" %}
 
 {% block head %}
-<!-- Three.js specifically for home page 3D elements -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<!-- SEO Meta Tags -->
+<meta name="description" content="{% if profile %}{{ profile.title }}{% else %}Professional Portfolio of Ravi Pangali - Full Stack Developer crafting elegant, user-friendly web applications{% endif %}">
+<meta name="keywords" content="developer, portfolio, web development, full stack, {% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}">
+<meta name="author" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}">
 
-<!-- Add reCAPTCHA script with callbacks -->
+<!-- Open Graph / Social Media Meta Tags -->
+<meta property="og:title" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %} - Portfolio">
+<meta property="og:description" content="{% if profile %}{{ profile.title }}{% else %}Professional Portfolio of Ravi Pangali - Full Stack Developer{% endif %}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% if profile and profile.avatar %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.avatar.url }}">
+{% endif %}
+
+<!-- Critical CSS for above-the-fold content - inline for faster rendering -->
+<link rel="preload" href="/static/css/home-critical.css" as="style">
+<link rel="stylesheet" href="/static/css/home-critical.css">
+
+<!-- Load full CSS asynchronously -->
+<link rel="stylesheet" href="/static/css/home.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/static/css/home.css"></noscript>
+
+<!-- Preload critical JS -->
+<link rel="preload" href="/static/js/home.js" as="script">
+
+<!-- Load non-critical scripts with defer -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <script>
-    // reCAPTCHA callbacks
+    // reCAPTCHA callbacks - these are critical so they're kept inline
     function recaptchaCallback() {
-        // Enable submit button when reCAPTCHA is verified
         document.getElementById('contact-submit-btn').removeAttribute('disabled');
         document.getElementById('contact-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
         document.getElementById('contact-submit-btn').classList.add('hover:shadow-lg', 'hover:shadow-blue-500/30');
     }
     
     function recaptchaExpiredCallback() {
-        // Disable submit button when reCAPTCHA expires
         document.getElementById('contact-submit-btn').setAttribute('disabled', 'disabled');
         document.getElementById('contact-submit-btn').classList.add('opacity-50', 'cursor-not-allowed');
         document.getElementById('contact-submit-btn').classList.remove('hover:shadow-lg', 'hover:shadow-blue-500/30');
     }
 </script>
+
 <style>
+    /* Critical CSS only - move non-critical styles to external file */
     .inputContactText {
         color: gray !important;
     }
-    /* Additional styles for enhanced blur effect */
+    
+    /* Hero section essentials - rest can be moved to external CSS */
     .blur-card {
         backdrop-filter: blur(24px) !important;
         -webkit-backdrop-filter: blur(24px) !important;
@@ -34,12 +59,6 @@
         border: 1px solid rgba(59, 130, 246, 0.2) !important;
     }
     
-    .blur-card:hover {
-        background-color: rgba(15, 23, 42, 0.25) !important;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(59, 130, 246, 0.2), 0 0 25px rgba(59, 130, 246, 0.25) !important;
-    }
-
-    /* Hero section enhancements */
     .hero-glow {
         text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
     }
@@ -58,164 +77,8 @@
         100% { transform: translateY(0px); }
     }
     
-    .hero-name-bg {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.3));
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.3),
-            0 0 30px rgba(59, 130, 246, 0.15);
-    }
-    
-    .typing-cursor {
-        display: inline-block;
-        width: 3px;
-        height: 1em;
-        background-color: #3b82f6;
-        margin-left: 4px;
-        animation: cursor-blink 1s step-end infinite;
-    }
-    
-    .hero-subtitle {
-        font-weight: 600;
-        background: linear-gradient(90deg, #3b82f6, #06b6d4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-    }
-    
-    .social-icon-blur {
-        background: rgba(15, 23, 42, 0.4);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        transition: all 0.3s ease;
-    }
-    
-    .social-icon-blur:hover {
-        background: rgba(59, 130, 246, 0.2);
-        border-color: rgba(59, 130, 246, 0.4);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    .galaxy-overlay {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, transparent 0%, rgba(5, 12, 28, 0.7) 100%);
-        z-index: -5;
-    }
-    
-    .hero-btn {
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-    }
-    
-    .hero-btn:hover {
-        transform: translateY(-3px);
-    }
-    
-    .primary-btn {
-        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
-    }
-    
-    .primary-btn:hover {
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-    }
-    
-    /* Project modal styles */
-    .project-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 100;
-        overflow-y: auto;
-        background-color: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-    }
-    
-    .project-modal.active {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
-    
-    .modal-content {
-        max-width: 800px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        animation: modal-slide-in 0.3s ease-out;
-    }
-    
-    @keyframes modal-slide-in {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .see-more-btn {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.15));
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        padding: 0.4rem 0.75rem;
-        border-radius: 0.5rem;
-        transition: all 0.3s ease;
-    }
-    
-    .see-more-btn:hover {
-        background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.25));
-        border-color: rgba(59, 130, 246, 0.3);
-    }
-    
-    .close-modal-btn {
-        position: absolute;
-        top: 1.25rem;
-        right: 1.25rem;
-        background: rgba(15, 23, 42, 0.5);
-        width: 2.5rem;
-        height: 2.5rem;
-        border-radius: 9999px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        cursor: pointer;
-    }
-    
-    .close-modal-btn:hover {
-        background: rgba(15, 23, 42, 0.7);
-        transform: rotate(90deg);
-    }
-    
-    .description-truncate {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    /* Mobile responsive adjustments */
-    @media (max-width: 768px) {
-        .hero-name-bg {
-            padding: 1.75rem !important;
-        }
-    }
+    /* Include only the most critical styles here */
+    /* Rest of the styles moved to external CSS file */
 </style>
 {% endblock %}
 
@@ -228,27 +91,11 @@
         <!-- Overlay to enhance galaxy visibility -->
         <div class="galaxy-overlay"></div>
         
-        <!-- Blockchain grid pattern -->
+        <!-- Reduced animations and particles for better performance -->
         <div class="blockchain-grid"></div>
-        
-        <!-- Digital circuit lines -->
         <div class="circuit-line circuit-line-1"></div>
-        <div class="circuit-line circuit-line-2"></div>
-        <div class="circuit-line circuit-line-3"></div>
-        <div class="circuit-line circuit-line-4"></div>
-        
-        <!-- Digital particles -->
-        <div id="digital-particles-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
-        
-        <!-- Animated particles -->
         <div class="absolute inset-0 opacity-70">
             <div class="stars-container absolute inset-0"></div>
-        </div>
-        
-        <!-- Animated gradient lines -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="gradient-line absolute h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent w-full top-1/4 transform -translate-y-1/2 opacity-30"></div>
-            <div class="gradient-line absolute h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent w-full top-3/4 transform -translate-y-1/2 opacity-30"></div>
         </div>
     </div>
 
@@ -257,7 +104,7 @@
         <!-- Enhanced dark blue background -->
         <div class="absolute inset-0 bg-gradient-to-b from-[#050c1c]/90 to-[#050c1c]/80"></div>
         
-        <!-- Particle background -->
+        <!-- Reduced particle density for better performance -->
         <div class="absolute inset-0">
             <div id="hero-particles" class="w-full h-full"></div>
         </div>
@@ -324,9 +171,9 @@
                     <div class="relative">
                         <div class="w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden hero-avatar">
                             {% if profile.avatar %}
-                            <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover">
+                            <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover" loading="eager" fetchpriority="high">
                             {% else %}
-                            <img src="/static/img/icon.png" alt="Profile" class="w-full h-full object-cover">
+                            <img src="/static/img/icon.png" alt="Profile" class="w-full h-full object-cover" loading="eager" fetchpriority="high">
                             {% endif %}
                         </div>
                         <!-- Enhanced orbit elements -->
@@ -377,9 +224,9 @@
                 </div>
                 <div class="lg:w-1/2 fade-in">
                     {% if about.image %}
-                    <img src="{{ about.image.url }}" alt="About Me" class="rounded-xl sm:rounded-2xl w-full glass-card p-2">
+                    <img src="{{ about.image.url }}" alt="About Me" class="rounded-xl sm:rounded-2xl w-full glass-card p-2" loading="lazy" width="600" height="400">
                     {% else %}
-                    <img src="/static/img/icon.png" alt="Profile Image" class="rounded-xl sm:rounded-2xl w-full glass-card p-2">
+                    <img src="/static/img/icon.png" alt="Profile Image" class="rounded-xl sm:rounded-2xl w-full glass-card p-2" loading="lazy" width="600" height="400">
                     {% endif %}
                 </div>
             </div>
@@ -397,9 +244,9 @@
                         <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
                             <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
                                 {% if project.image %}
-                                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full">
+                                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full" loading="lazy" width="600" height="400">
                                 {% else %}
-                                    <img src="https://picsum.photos/600/400?random={{ forloop.counter }}" alt="{{ project.title }}" class="w-full">
+                                    <img src="https://picsum.photos/600/400?random={{ forloop.counter }}" alt="{{ project.title }}" class="w-full" loading="lazy" width="600" height="400">
                                 {% endif %}
                             </div>
                             <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">{{ project.title }}</h3>
@@ -434,9 +281,9 @@
                                 
                                 <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-6">
                                     {% if project.image %}
-                                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full">
+                                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full" loading="lazy" width="800" height="400">
                                     {% else %}
-                                        <img src="https://picsum.photos/800/400?random={{ forloop.counter }}" alt="{{ project.title }}" class="w-full">
+                                        <img src="https://picsum.photos/800/400?random={{ forloop.counter }}" alt="{{ project.title }}" class="w-full" loading="lazy" width="800" height="400">
                                     {% endif %}
                                 </div>
                                 
@@ -473,7 +320,7 @@
                     <!-- Placeholder Project -->
                     <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
                         <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
-                            <img src="https://picsum.photos/600/400?random=1" alt="Project 1" class="w-full">
+                            <img src="https://picsum.photos/600/400?random=1" alt="Project 1" class="w-full" loading="lazy" width="600" height="400">
                         </div>
                         <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Sample Project</h3>
                         <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">Add projects in the admin panel to replace this placeholder.</p>
@@ -807,8 +654,29 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/home.js"></script>
-<link rel="stylesheet" href="/static/css/home.css">
+<!-- Load home.js at the end for better performance -->
+<script src="/static/js/home.min.js" defer></script>
+
+<!-- Schema.org structured data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}",
+  "url": "{{ request.build_absolute_uri }}",
+  {% if profile and profile.avatar %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ profile.avatar.url }}",
+  {% endif %}
+  "jobTitle": "{% if profile %}{{ profile.title }}{% else %}Full Stack Developer{% endif %}",
+  "sameAs": [
+    {% if profile.github %}"{{ profile.github }}",{% endif %}
+    {% if profile.linkedin %}"{{ profile.linkedin }}",{% endif %}
+    {% if profile.facebook %}"{{ profile.facebook }}",{% endif %}
+    {% if profile.instagram %}"{{ profile.instagram }}"{% endif %}
+  ]
+}
+</script>
+
 <script>
     // Project Modal Functions
     function openProjectModal(modalId) {
@@ -845,6 +713,27 @@
             modals.forEach(modal => {
                 const modalId = modal.getAttribute('id');
                 closeProjectModal(modalId);
+            });
+        }
+    });
+    
+    // Performance optimizations
+    // Lazy load animations and non-critical elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Use Intersection Observer for elements below the fold
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {rootMargin: '0px 0px 50px 0px'});
+            
+            // Observe all elements with fade-in class
+            document.querySelectorAll('.fade-in:not(.visible)').forEach(el => {
+                observer.observe(el);
             });
         }
     });

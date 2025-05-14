@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'
+    'app',
+    'django.contrib.sites',  # Required for site framework
 ]
 
 MIDDLEWARE = [
@@ -50,7 +51,24 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',  # Enable GZIP compression
+    'htmlmin.middleware.HtmlMinifyMiddleware',  # Minify HTML output
+    'htmlmin.middleware.MarkRequestMiddleware',
 ]
+
+# HTML minification settings
+HTML_MINIFY = True
+
+# Cache settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+# Cache timeout in seconds (5 minutes)
+CACHE_MIDDLEWARE_SECONDS = 300
 
 ROOT_URLCONF = 'ravipangali.urls'
 
@@ -123,7 +141,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -134,18 +152,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email Configuration
-# For development - console backend
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    # For production - SMTP backend (Gmail example)
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'legendromeoravi@gmail.com'  # Replace with your email
-    EMAIL_HOST_PASSWORD = 'shay ysrg akcb telf'  # Replace with your app password
-    DEFAULT_FROM_EMAIL = 'Ravi Pangali <legendromeoravi@gmail.com>'  # Replace with your name and email
+# SMTP backend (Gmail) for both development and production
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'legendromeoravi@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'shay ysrg akcb telf'  # Replace with your app password
+DEFAULT_FROM_EMAIL = 'Ravi Pangali <legendromeoravi@gmail.com>'  # Replace with your name and email
 
 # Message settings for flash messages
 from django.contrib.messages import constants as messages
@@ -156,4 +170,7 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+# Django sites framework
+SITE_ID = 1
 

@@ -2,25 +2,33 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-import requests
-import json
 from .models import Profile, About, Project, TechnicalSkill, SoftSkill, Experience
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import condition
 
-# Create your views here.
+# Create ETags for caching based on model updates
+def get_latest_update_time():
+    # Get latest update from models
+    last_profile_update = Profile.objects.latest('id').id if Profile.objects.exists() else 0
+    last_about_update = About.objects.latest('id').id if About.objects.exists() else 0
+    last_project_update = Project.objects.latest('id').id if Project.objects.exists() else 0
+    
+    # Return the latest update ID
+    return max(last_profile_update, last_about_update, last_project_update)
+
+# Cache home page for 5 minutes (300 seconds)
+@cache_page(300)
+@condition(last_modified_func=get_latest_update_time)
 def home(request):
-    # Handle form submission
+    # Skip cache for POST requests
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
         subject = request.POST.get('subject')
         message = request.POST.get('message')
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        
-        # Check if reCAPTCHA is valid
-        recaptcha_valid = verify_recaptcha(recaptcha_response)
         
         # Form validation
-        if name and email and subject and message and recaptcha_valid:
+        if name and email and subject and message:
             # Get admin email from profile or use a default
             try:
                 profile = Profile.objects.first()
@@ -43,8 +51,6 @@ def home(request):
                 messages.success(request, "Your message has been sent. Thank you!")
             except Exception as e:
                 messages.error(request, f"There was an error sending your message. Please try again later.")
-        elif not recaptcha_valid:
-            messages.error(request, "reCAPTCHA verification failed. Please try again.")
         else:
             messages.error(request, "Please fill in all fields.")
         
@@ -77,22 +83,4 @@ def home(request):
     }
     
     return render(request, 'home.html', context)
-
-def verify_recaptcha(response):
-    """
-    Verify the reCAPTCHA response with Google
-    """
-    if not response:
-        return False
-        
-    try:
-        data = {
-            'secret': '6LebYTorAAAAAFmO_qp9PyJpcVhDdDZ4pa8Ly11k',  # Replace with your actual secret key
-            'response': response
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result = json.loads(r.text)
-        return result.get('success', False)
-    except:
-        return False
 

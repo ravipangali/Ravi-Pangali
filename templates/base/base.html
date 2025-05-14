@@ -4,15 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}Ravi Pangali | Portfolio{% endblock %}</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/static/img/icon.png" as="image">
+    <link rel="preload" href="/static/css/style.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
     <link rel="shortcut icon" href="/static/img/icon.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- GSAP for smooth animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <!-- Main CSS file with imports -->
-    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Critical CSS inline -->
+    <style>
+        /* Critical path CSS inline */
+        body {margin: 0; padding: 0; font-family: 'Inter', sans-serif;}
+        .main-container {min-height: 100vh;}
+    </style>
+    
+    <!-- Load CSS async -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/static/css/style.css" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="/static/css/style.css">
+    </noscript>
+    
+    <!-- GSAP for smooth animations - loaded with defer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -56,15 +83,11 @@
         </div>
     </div>
     
-    <!-- Mobile menu script (direct load for reliability) -->
-    <script src="/static/js/mobile-menu.js"></script>
-    
-    <!-- Load theme manager first -->
-    <script src="/static/js/themes/theme-manager.js"></script>
-    <script src="/static/js/themes/galaxy.js"></script>
-    
-    <!-- Then load main JS -->
-    <script src="/static/js/main.js"></script>
+    <!-- Load JS with proper strategy -->
+    <script src="/static/js/mobile-menu.js" defer></script>
+    <script src="/static/js/themes/theme-manager.js" defer></script>
+    <script src="/static/js/themes/galaxy.js" defer></script>
+    <script src="/static/js/main.js" defer></script>
     
     {% block scripts %}{% endblock %}
 </body>

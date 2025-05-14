@@ -1,0 +1,176 @@
+/* Galaxy Theme Styles */
+
+/* Full page 3D background */
+#galaxy-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Blockchain grid pattern for galaxy theme */
+.blockchain-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 50px 50px;
+    background-image: 
+        linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* Digital circuit lines - specific to galaxy theme */
+.circuit-line {
+    position: fixed;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+    z-index: -2;
+    animation: circuit-slide 15s linear infinite;
+    pointer-events: none;
+}
+
+.circuit-line-1 {
+    top: 15%;
+    width: 100%;
+    animation-delay: 0s;
+}
+
+.circuit-line-2 {
+    top: 45%;
+    width: 100%;
+    animation-delay: -5s;
+}
+
+.circuit-line-3 {
+    top: 75%;
+    width: 100%;
+    animation-delay: -10s;
+}
+
+.circuit-line-4 {
+    top: 95%;
+    width: 100%;
+    animation-delay: -15s;
+}
+
+@keyframes circuit-slide {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Digital particle effect */
+.digital-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: rgba(59, 130, 246, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float-up 10s linear infinite;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 0;
+        transform: translateY(0) translateX(0);
+    }
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-1000px) translateX(var(--x-drift));
+    }
+}
+
+/* Floating code effect for galaxy theme */
+.code-particle {
+    position: absolute;
+    font-family: monospace;
+    font-size: 12px;
+    color: #3b82f6;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 0 5px rgba(59, 130, 246, 0.8);
+    opacity: 0.7;
+}
+
+/* Star effect */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -3;
+    pointer-events: none;
+}
+
+/* Animated gradient lines */
+.gradient-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    animation: gradient-slide 15s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes gradient-slide {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Theme-specific glow effects */
+.theme-galaxy .glow-effect {
+    box-shadow: 0 0 16px 2px rgba(59, 130, 246, 0.4), 0 0 32px 8px rgba(6, 182, 212, 0.2);
+}
+
+/* Theme-specific glass styling */
+.theme-galaxy .glass-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2), 
+        inset 0 0 0 1px rgba(59, 130, 246, 0.1),
+        0 0 15px rgba(59, 130, 246, 0.15);
+}
+
+.theme-galaxy .glass-card:hover {
+    background: rgba(15, 23, 42, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.25), 
+        inset 0 0 0 1px rgba(59, 130, 246, 0.15),
+        0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* Galaxy theme particleJs background */
+#galaxy-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+} 
