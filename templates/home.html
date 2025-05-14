@@ -15,36 +15,27 @@
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.avatar.url }}">
 {% endif %}
 
-<!-- Critical CSS for above-the-fold content - inline for faster rendering -->
-<link rel="preload" href="/static/css/home-critical.css" as="style">
-<link rel="stylesheet" href="/static/css/home-critical.css">
-
-<!-- Load full CSS asynchronously -->
-<link rel="stylesheet" href="/static/css/home.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="/static/css/home.css"></noscript>
-
-<!-- Preload critical JS -->
-<link rel="preload" href="/static/js/home.js" as="script">
-
-<!-- Load non-critical scripts with defer -->
+<!-- Three.js specifically for home page 3D elements - load with defer -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+<!-- Add reCAPTCHA script with callbacks - load with defer -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
-    // reCAPTCHA callbacks - these are critical so they're kept inline
+    // reCAPTCHA callbacks
     function recaptchaCallback() {
+        // Enable submit button when reCAPTCHA is verified
         document.getElementById('contact-submit-btn').removeAttribute('disabled');
         document.getElementById('contact-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
         document.getElementById('contact-submit-btn').classList.add('hover:shadow-lg', 'hover:shadow-blue-500/30');
     }
     
     function recaptchaExpiredCallback() {
+        // Disable submit button when reCAPTCHA expires
         document.getElementById('contact-submit-btn').setAttribute('disabled', 'disabled');
         document.getElementById('contact-submit-btn').classList.add('opacity-50', 'cursor-not-allowed');
         document.getElementById('contact-submit-btn').classList.remove('hover:shadow-lg', 'hover:shadow-blue-500/30');
     }
 </script>
-
 <style>
     /* Critical CSS only - move non-critical styles to external file */
     .inputContactText {
@@ -654,8 +645,13 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Load home.js at the end for better performance -->
-<script src="/static/js/home.min.js" defer></script>
+<!-- Load non-critical CSS separately -->
+<link rel="stylesheet" href="/static/css/home.css" media="print" onload="this.media='all'">
+<!-- Fallback if JS is disabled -->
+<noscript><link rel="stylesheet" href="/static/css/home.css"></noscript>
+
+<!-- Load JS at the end with defer attribute -->
+<script src="/static/js/home.js" defer></script>
 
 <!-- Schema.org structured data for SEO -->
 <script type="application/ld+json">

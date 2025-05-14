@@ -26,11 +26,10 @@ SECRET_KEY = 'django-insecure-5-#+!3-3p3e@w0*4udv4$rl6t62ju31+^tz5*e6ci^$rs&=&iu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -39,8 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
-    'django.contrib.sites',  # Required for site framework
+    'app'
 ]
 
 MIDDLEWARE = [
@@ -51,24 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.gzip.GZipMiddleware',  # Enable GZIP compression
-    'htmlmin.middleware.HtmlMinifyMiddleware',  # Minify HTML output
-    'htmlmin.middleware.MarkRequestMiddleware',
 ]
-
-# HTML minification settings
-HTML_MINIFY = True
-
-# Cache settings
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
-}
-
-# Cache timeout in seconds (5 minutes)
-CACHE_MIDDLEWARE_SECONDS = 300
 
 ROOT_URLCONF = 'ravipangali.urls'
 
@@ -141,7 +122,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -170,7 +151,4 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
-
-# Django sites framework
-SITE_ID = 1
 
