@@ -5,8 +5,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
                 <!-- About -->
                 <div>
-                    <h3 class="text-xl font-bold mb-4 gradient-text">Ravi Pangali</h3>
-                    <p class="text-slate-300 mb-4 text-sm sm:text-base">Full Stack Developer crafting elegant, user-friendly web applications with modern technologies and creative solutions.</p>
+                    <h3 class="text-xl font-bold mb-4 gradient-text">{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}</h3>
+                    <p class="text-slate-300 mb-4 text-sm sm:text-base">{% if profile %}{{ profile.title }}{% else %}Full Stack Developer crafting elegant, user-friendly web applications with modern technologies and creative solutions.{% endif %}</p>
                     <div class="flex items-center space-x-2">
                         <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                         <span class="text-green-400 text-xs sm:text-sm">Available for freelance work</span>
@@ -30,18 +30,24 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4 gradient-text">Contact Info</h3>
                     <ul class="space-y-3">
+                        {% if profile and profile.email %}
                         <li class="flex items-start">
                             <i class="fas fa-envelope text-blue-400 mt-1 mr-3"></i>
-                            <span class="text-slate-300 text-sm sm:text-base">your.email@example.com</span>
+                            <span class="text-slate-300 text-sm sm:text-base">{{ profile.email }}</span>
                         </li>
+                        {% endif %}
+                        {% if profile and profile.phone %}
                         <li class="flex items-start">
                             <i class="fas fa-phone text-blue-400 mt-1 mr-3"></i>
-                            <span class="text-slate-300 text-sm sm:text-base">+1 (234) 567-890</span>
+                            <span class="text-slate-300 text-sm sm:text-base">{{ profile.phone }}</span>
                         </li>
+                        {% endif %}
+                        {% if profile and profile.location %}
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt text-blue-400 mt-1 mr-3"></i>
-                            <span class="text-slate-300 text-sm sm:text-base">San Francisco, CA</span>
+                            <span class="text-slate-300 text-sm sm:text-base">{{ profile.location }}</span>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
                 
@@ -49,18 +55,35 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4 gradient-text">Connect</h3>
                     <div class="flex space-x-3">
+                        {% if profile and profile.github %}
+                        <a href="{{ profile.github }}" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        {% endif %}
+                        {% if profile and profile.linkedin %}
+                        <a href="{{ profile.linkedin }}" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        {% if profile and profile.facebook %}
+                        <a href="{{ profile.facebook }}" class="social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        {% endif %}
+                        {% if profile and profile.instagram %}
+                        <a href="{{ profile.instagram }}" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        {% endif %}
+                        {% if not profile or not profile.github and not profile.linkedin and not profile.facebook and not profile.instagram %}
+                        <!-- Placeholder social links if none set in profile -->
                         <a href="#" class="social-link">
                             <i class="fab fa-github"></i>
                         </a>
                         <a href="#" class="social-link">
                             <i class="fab fa-linkedin"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-dribbble"></i>
-                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -68,7 +91,7 @@
             <!-- Copyright -->
             <div class="mt-8 sm:mt-12 pt-6 border-t border-slate-700/50">
                 <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-slate-400 text-xs sm:text-sm mb-4 md:mb-0">© 2023 Ravi Pangali. All rights reserved.</p>
+                    <p class="text-slate-400 text-xs sm:text-sm mb-4 md:mb-0">© {% now "Y" %} {% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}. All rights reserved.</p>
                     <div class="flex space-x-6">
                         <a href="#" class="text-slate-400 text-xs sm:text-sm hover:text-blue-400 transition-colors">Privacy Policy</a>
                         <a href="#" class="text-slate-400 text-xs sm:text-sm hover:text-blue-400 transition-colors">Terms of Service</a>

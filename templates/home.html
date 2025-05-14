@@ -3,7 +3,29 @@
 {% block head %}
 <!-- Three.js specifically for home page 3D elements -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+
+<!-- Add reCAPTCHA script with callbacks -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    // reCAPTCHA callbacks
+    function recaptchaCallback() {
+        // Enable submit button when reCAPTCHA is verified
+        document.getElementById('contact-submit-btn').removeAttribute('disabled');
+        document.getElementById('contact-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('contact-submit-btn').classList.add('hover:shadow-lg', 'hover:shadow-blue-500/30');
+    }
+    
+    function recaptchaExpiredCallback() {
+        // Disable submit button when reCAPTCHA expires
+        document.getElementById('contact-submit-btn').setAttribute('disabled', 'disabled');
+        document.getElementById('contact-submit-btn').classList.add('opacity-50', 'cursor-not-allowed');
+        document.getElementById('contact-submit-btn').classList.remove('hover:shadow-lg', 'hover:shadow-blue-500/30');
+    }
+</script>
 <style>
+    .inputContactText {
+        color: gray !important;
+    }
     /* Additional styles for enhanced blur effect */
     .blur-card {
         backdrop-filter: blur(24px) !important;
@@ -23,7 +45,7 @@
     }
     
     .hero-avatar {
-        border: 2px solid rgba(59, 130, 246, 0.5);
+        border: 3px solid rgba(59, 130, 246, 0.5);
         box-shadow: 
             0 0 25px rgba(59, 130, 246, 0.4),
             0 0 60px rgba(6, 182, 212, 0.2);
@@ -37,11 +59,13 @@
     }
     
     .hero-name-bg {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.05));
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(59, 130, 246, 0.15);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.3));
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 
+            0 25px 50px rgba(0, 0, 0, 0.3),
+            0 0 30px rgba(59, 130, 246, 0.15);
     }
     
     .typing-cursor {
@@ -62,10 +86,134 @@
         text-fill-color: transparent;
     }
     
+    .social-icon-blur {
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .social-icon-blur:hover {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .galaxy-overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 0%, rgba(5, 12, 28, 0.7) 100%);
+        z-index: -5;
+    }
+    
+    .hero-btn {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .hero-btn:hover {
+        transform: translateY(-3px);
+    }
+    
+    .primary-btn {
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .primary-btn:hover {
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+    
+    /* Project modal styles */
+    .project-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 100;
+        overflow-y: auto;
+        background-color: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .project-modal.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    .modal-content {
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modal-slide-in 0.3s ease-out;
+    }
+    
+    @keyframes modal-slide-in {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .see-more-btn {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.15));
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .see-more-btn:hover {
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.25));
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    .close-modal-btn {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        background: rgba(15, 23, 42, 0.5);
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+    }
+    
+    .close-modal-btn:hover {
+        background: rgba(15, 23, 42, 0.7);
+        transform: rotate(90deg);
+    }
+    
+    .description-truncate {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
     /* Mobile responsive adjustments */
     @media (max-width: 768px) {
         .hero-name-bg {
-            padding: 1.5rem !important;
+            padding: 1.75rem !important;
         }
     }
 </style>
@@ -76,6 +224,9 @@
     <div id="galaxy-background" class="fixed inset-0 w-full h-full overflow-hidden -z-10">
         <!-- 3D canvas for blockchain galaxy -->
         <canvas id="galaxy-canvas" class="absolute inset-0 w-full h-full"></canvas>
+        
+        <!-- Overlay to enhance galaxy visibility -->
+        <div class="galaxy-overlay"></div>
         
         <!-- Blockchain grid pattern -->
         <div class="blockchain-grid"></div>
@@ -90,7 +241,7 @@
         <div id="digital-particles-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
         
         <!-- Animated particles -->
-        <div class="absolute inset-0 opacity-60">
+        <div class="absolute inset-0 opacity-70">
             <div class="stars-container absolute inset-0"></div>
         </div>
         
@@ -102,9 +253,9 @@
     </div>
 
     <!-- Hero Section -->
-    <section id="hero" class="relative pt-32 pb-20 md:min-h-screen flex items-center justify-center overflow-hidden bg-[#050c1c]">
-        <!-- Dark blue background -->
-        <div class="absolute inset-0 bg-[#050c1c]"></div>
+    <section id="hero" class="relative pt-32 pb-20 md:min-h-screen flex items-center justify-center overflow-hidden bg-[#050c1c]/90">
+        <!-- Enhanced dark blue background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#050c1c]/90 to-[#050c1c]/80"></div>
         
         <!-- Particle background -->
         <div class="absolute inset-0">
@@ -112,76 +263,92 @@
         </div>
         
         <div class="container mx-auto px-4 z-10">
-            <div class="flex flex-col lg:flex-row items-center justify-between">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-10">
                 <!-- Text content -->
-                <div class="lg:w-2/3 text-center lg:text-left mb-12 lg:mb-0">
-                    <div class="hero-name-bg px-4 sm:px-8 py-6 sm:py-10 rounded-3xl inline-block mb-8">
-                        <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 text-white hero-glow">
-                            Ravi <span class="gradient-text">Pangali</span>
+                <div class="lg:w-3/5 text-center lg:text-left">
+                    <div class="hero-name-bg px-6 sm:px-10 py-8 sm:py-12 rounded-3xl inline-block mb-8 w-full lg:w-auto">
+                        <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold mb-5 sm:mb-7 text-white hero-glow">
+                            {% if profile %}{{ profile.name|title }}{% else %}Ravi <span class="gradient-text">Pangali</span>{% endif %}
                         </h1>
                         
                         <!-- Subtitle with typing effect -->
-                        <h2 class="text-xl sm:text-2xl md:text-3xl mb-6 relative flex items-center justify-center lg:justify-start">
-                            <span class="typewriter-text hero-subtitle relative inline-block"></span>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl mb-8 relative flex items-center justify-center lg:justify-start">
+                            <span class="typewriter-text hero-subtitle relative inline-block">
+                                {% if profile %}{{ profile.title }}{% endif %}
+                            </span>
                             <span class="typing-cursor"></span>
                         </h2>
                         
-                        <!-- Simple buttons -->
+                        <!-- Enhanced buttons -->
                         <div class="flex flex-col sm:flex-row justify-center lg:justify-start sm:space-x-6 space-y-4 sm:space-y-0">
-                            <a href="#projects" class="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl text-white font-medium text-sm sm:text-base transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/40 flex items-center justify-center group">
+                            <a href="#projects" class="hero-btn primary-btn px-7 sm:px-9 py-4 sm:py-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl text-white font-medium text-sm sm:text-base transition-all duration-300 flex items-center justify-center group">
                                 <span>View My Work</span>
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                 </svg>
                             </a>
                             
-                            <a href="#contact" class="px-6 sm:px-8 py-3 sm:py-4 bg-transparent border-2 border-blue-400 rounded-xl text-blue-400 text-sm sm:text-base font-medium transition-all duration-300 hover:bg-blue-400/10 flex items-center justify-center">
+                            <a href="#contact" class="hero-btn px-7 sm:px-9 py-4 sm:py-5 bg-transparent border-2 border-blue-400 rounded-xl text-blue-400 text-sm sm:text-base font-medium transition-all duration-300 hover:bg-blue-400/10 flex items-center justify-center">
                                 <span>Contact Me</span>
                             </a>
                         </div>
                     </div>
                     
-                    <!-- Social links -->
-                    <div class="flex justify-center lg:justify-start space-x-4 mt-6 sm:mt-8">
-                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-800/80 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-slate-700/80 transition-all duration-300">
-                            <i class="fab fa-github"></i>
+                    <!-- Social links with blur boxes -->
+                    <div class="flex justify-center lg:justify-start space-x-5 mt-8">
+                        {% if profile.github %}
+                        <a href="{{ profile.github }}" class="social-icon-blur w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-blue-400 hover:text-white">
+                            <i class="fab fa-github text-lg"></i>
                         </a>
-                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-800/80 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-slate-700/80 transition-all duration-300">
-                            <i class="fab fa-twitter"></i>
+                        {% endif %}
+                        {% if profile.facebook %}
+                        <a href="{{ profile.facebook }}" class="social-icon-blur w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-blue-400 hover:text-white">
+                            <i class="fab fa-facebook-f text-lg"></i>
                         </a>
-                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-800/80 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-slate-700/80 transition-all duration-300">
-                            <i class="fab fa-linkedin-in"></i>
+                        {% endif %}
+                        {% if profile.linkedin %}
+                        <a href="{{ profile.linkedin }}" class="social-icon-blur w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-blue-400 hover:text-white">
+                            <i class="fab fa-linkedin-in text-lg"></i>
                         </a>
-                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 bg-slate-800/80 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-slate-700/80 transition-all duration-300">
-                            <i class="fab fa-dribbble"></i>
+                        {% endif %}
+                        {% if profile.instagram %}
+                        <a href="{{ profile.instagram }}" class="social-icon-blur w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-blue-400 hover:text-white">
+                            <i class="fab fa-instagram text-lg"></i>
                         </a>
+                        {% endif %}
                     </div>
                 </div>
                 
-                <!-- Avatar -->
-                <div class="lg:w-1/3 flex justify-center">
+                <!-- Avatar with enhanced presentation -->
+                <div class="lg:w-2/5 flex justify-center">
                     <div class="relative">
-                        <div class="w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden hero-avatar">
-                            <img src="/static/img/icon.png" alt="Ravi Pangali" class="w-full h-full object-cover">
+                        <div class="w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden hero-avatar">
+                            {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <img src="/static/img/icon.png" alt="Profile" class="w-full h-full object-cover">
+                            {% endif %}
                         </div>
-                        <!-- Orbit elements -->
-                        <div class="absolute inset-0 w-full h-full rounded-full border border-blue-400/20 animate-[spin_15s_linear_infinite]"></div>
-                        <div class="absolute inset-0 w-full h-full rounded-full border border-cyan-400/20 animate-[spin_25s_linear_infinite_reverse]" style="width: 110%; height: 110%; left: -5%; top: -5%"></div>
-                        <!-- Floating icon -->
-                        <div class="absolute w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-500 rounded-full top-0 left-1/2 -translate-x-1/2 flex items-center justify-center shadow-lg shadow-blue-500/30 animate-bounce">
-                            <i class="fas fa-code text-white text-xs sm:text-sm md:text-base"></i>
+                        <!-- Enhanced orbit elements -->
+                        <div class="absolute inset-0 w-full h-full rounded-full border-2 border-blue-400/20 animate-[spin_15s_linear_infinite]"></div>
+                        <div class="absolute inset-0 w-full h-full rounded-full border-2 border-cyan-400/20 animate-[spin_25s_linear_infinite_reverse]" style="width: 115%; height: 115%; left: -7.5%; top: -7.5%"></div>
+                        <div class="absolute inset-0 w-full h-full rounded-full border border-blue-500/5 animate-[spin_40s_linear_infinite]" style="width: 130%; height: 130%; left: -15%; top: -15%"></div>
+                        
+                        <!-- Enhanced floating icon -->
+                        <div class="absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full top-0 left-1/2 -translate-x-1/2 flex items-center justify-center shadow-lg shadow-blue-500/30 animate-bounce">
+                            <i class="fas fa-code text-white text-lg sm:text-xl"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Simple scroll indicator -->
-        <div class="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 cursor-pointer">
+        <!-- Enhanced scroll indicator -->
+        <div class="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2 cursor-pointer animate-pulse">
             <div class="flex flex-col items-center">
-                <span class="text-blue-400 text-xs sm:text-sm mb-2">Scroll</span>
-                <div class="w-6 h-10 sm:w-8 sm:h-12 border-2 border-blue-400 rounded-full flex justify-center">
-                    <div class="w-1 h-2 sm:w-1.5 sm:h-3 bg-blue-400 rounded-full mt-1 animate-bounce"></div>
+                <span class="text-blue-400 text-xs sm:text-sm mb-3">Scroll Down</span>
+                <div class="w-7 h-12 sm:w-8 sm:h-14 border-2 border-blue-400 rounded-full flex justify-center">
+                    <div class="w-1.5 h-3 sm:w-2 sm:h-4 bg-blue-400 rounded-full mt-2 animate-bounce"></div>
                 </div>
             </div>
         </div>
@@ -194,16 +361,26 @@
             <div class="flex flex-col lg:flex-row items-center gap-8 sm:gap-12">
                 <div class="lg:w-1/2 fade-in">
                     <div class="glass-card blur-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
-                        <p class="text-base sm:text-lg">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nisl nisl aliquet nisl, eget aliquet nisl nisl sit amet lorem. Sed euismod, nunc sit amet ultricies lacinia, nisl nisl aliquet nisl.
-                        </p>
-                        <p class="text-base sm:text-lg">
-                            Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
-                        </p>
+                        {% if about %}
+                            <div class="text-base sm:text-lg">
+                                {{ about.content|linebreaks }}
+                            </div>
+                        {% else %}
+                            <p class="text-base sm:text-lg">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nisl nisl aliquet nisl, eget aliquet nisl nisl sit amet lorem. Sed euismod, nunc sit amet ultricies lacinia, nisl nisl aliquet nisl.
+                            </p>
+                            <p class="text-base sm:text-lg">
+                                Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+                            </p>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="lg:w-1/2 fade-in">
+                    {% if about.image %}
+                    <img src="{{ about.image.url }}" alt="About Me" class="rounded-xl sm:rounded-2xl w-full glass-card p-2">
+                    {% else %}
                     <img src="/static/img/icon.png" alt="Profile Image" class="rounded-xl sm:rounded-2xl w-full glass-card p-2">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -214,71 +391,98 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center">My <span class="gradient-text">Projects</span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                <!-- Project 1 -->
-                <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
-                    <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
-                        <img src="https://picsum.photos/600/400?random=1" alt="Project 1" class="w-full">
+                {% if projects %}
+                    {% for project in projects %}
+                        <!-- Project {{ forloop.counter }} -->
+                        <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+                            <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
+                                {% if project.image %}
+                                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full">
+                                {% else %}
+                                    <img src="https://picsum.photos/600/400?random={{ forloop.counter }}" alt="{{ project.title }}" class="w-full">
+                                {% endif %}
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">{{ project.title }}</h3>
+                            <div class="description-truncate text-slate-300 mb-3 sm:mb-4 text-sm sm:text-base">
+                                {{ project.description|truncatechars:150 }}
+                            </div>
+                            <button class="see-more-btn text-blue-400 mb-4 sm:mb-6 text-sm" 
+                                    onclick="openProjectModal('project-modal-{{ project.id }}')">
+                                <span>See more</span>
+                                <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                            </button>
+                            <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
+                                {% for tech in project.technologies.all %}
+                                    <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">{{ tech.name }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="flex gap-4">
+                                {% if project.link %}
+                                    <a href="{{ project.link }}" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
+                                        <i class="fas fa-external-link-alt"></i> View Project
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Project Modal -->
+                        <div id="project-modal-{{ project.id }}" class="project-modal">
+                            <div class="modal-content glass-card blur-card p-6 sm:p-8 rounded-xl sm:rounded-2xl relative">
+                                <button class="close-modal-btn" onclick="closeProjectModal('project-modal-{{ project.id }}')">
+                                    <i class="fas fa-times text-white"></i>
+                                </button>
+                                
+                                <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-6">
+                                    {% if project.image %}
+                                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full">
+                                    {% else %}
+                                        <img src="https://picsum.photos/800/400?random={{ forloop.counter }}" alt="{{ project.title }}" class="w-full">
+                                    {% endif %}
+                                </div>
+                                
+                                <h2 class="text-2xl sm:text-3xl font-bold mb-4">{{ project.title }}</h2>
+                                
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold mb-2 text-blue-400">Technologies</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        {% for tech in project.technologies.all %}
+                                            <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">{{ tech.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold mb-2 text-blue-400">Description</h3>
+                                    <div class="text-slate-300 text-sm sm:text-base">
+                                        {{ project.description|linebreaks }}
+                                    </div>
+                                </div>
+                                
+                                {% if project.link %}
+                                <div class="mt-4">
+                                    <a href="{{ project.link }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl text-white font-medium text-sm sm:text-base transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/40 inline-flex items-center">
+                                        <span>View Project</span>
+                                        <i class="fas fa-external-link-alt ml-2"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Placeholder Project -->
+                    <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+                        <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
+                            <img src="https://picsum.photos/600/400?random=1" alt="Project 1" class="w-full">
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Sample Project</h3>
+                        <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">Add projects in the admin panel to replace this placeholder.</p>
+                        <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
+                            <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">React</span>
+                            <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Node.js</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Project One</h3>
-                    <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">Description of project one goes here. This is a brief overview of what the project does and its key features.</p>
-                    <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">React</span>
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Node.js</span>
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">MongoDB</span>
-                    </div>
-                    <div class="flex gap-4">
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
-                            <i class="fab fa-github"></i> View Code
-                        </a>
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
-                            <i class="fas fa-external-link-alt"></i> Live Demo
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 2 -->
-                <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
-                    <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
-                        <img src="https://picsum.photos/600/400?random=2" alt="Project 2" class="w-full">
-                    </div>
-                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Project Two</h3>
-                    <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">Description of project two goes here. This is a brief overview of what the project does and its key features.</p>
-                    <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Vue.js</span>
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Firebase</span>
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Tailwind</span>
-                    </div>
-                    <div class="flex gap-4">
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
-                            <i class="fab fa-github"></i> View Code
-                        </a>
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
-                            <i class="fas fa-external-link-alt"></i> Live Demo
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="project-card glass-card p-4 sm:p-6 rounded-xl sm:rounded-2xl">
-                    <div class="relative overflow-hidden rounded-lg sm:rounded-xl mb-4 sm:mb-6">
-                        <img src="https://picsum.photos/600/400?random=3" alt="Project 3" class="w-full">
-                    </div>
-                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Project Three</h3>
-                    <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">Description of project three goes here. This is a brief overview of what the project does and its key features.</p>
-                    <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Python</span>
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">Django</span>
-                        <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">PostgreSQL</span>
-                    </div>
-                    <div class="flex gap-4">
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
-                            <i class="fab fa-github"></i> View Code
-                        </a>
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
-                            <i class="fas fa-external-link-alt"></i> Live Demo
-                        </a>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -292,49 +496,31 @@
                     <div class="glass-card blur-card p-4 sm:p-6 rounded-xl">
                         <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Technical Skills</h3>
                         
-                        <!-- Skill Bar -->
-                        <div class="mb-4 sm:mb-6">
-                            <div class="flex justify-between mb-1 sm:mb-2">
-                                <span class="text-sm sm:text-base">HTML/CSS</span>
-                                <span class="text-sm sm:text-base">90%</span>
+                        {% if technical_skills %}
+                            {% for skill in technical_skills %}
+                                <!-- Skill Bar -->
+                                <div class="mb-4 sm:mb-6">
+                                    <div class="flex justify-between mb-1 sm:mb-2">
+                                        <span class="text-sm sm:text-base">{{ skill.name }}</span>
+                                        <span class="text-sm sm:text-base">{{ skill.percentage }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-2 sm:h-2.5">
+                                        <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 sm:h-2.5 rounded-full skill-progress" data-percentage="{{ skill.percentage }}" style="width: {{ skill.percentage }}%"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Placeholder Skill -->
+                            <div class="mb-4 sm:mb-6">
+                                <div class="flex justify-between mb-1 sm:mb-2">
+                                    <span class="text-sm sm:text-base">HTML/CSS</span>
+                                    <span class="text-sm sm:text-base">90%</span>
+                                </div>
+                                <div class="w-full bg-slate-700 rounded-full h-2 sm:h-2.5">
+                                    <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 sm:h-2.5 rounded-full skill-progress" data-percentage="90"></div>
+                                </div>
                             </div>
-                            <div class="w-full bg-slate-700 rounded-full h-2 sm:h-2.5">
-                                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 sm:h-2.5 rounded-full skill-progress" data-percentage="90"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Skill Bar -->
-                        <div class="mb-4 sm:mb-6">
-                            <div class="flex justify-between mb-1 sm:mb-2">
-                                <span class="text-sm sm:text-base">JavaScript</span>
-                                <span class="text-sm sm:text-base">85%</span>
-                            </div>
-                            <div class="w-full bg-slate-700 rounded-full h-2 sm:h-2.5">
-                                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 sm:h-2.5 rounded-full skill-progress" data-percentage="85"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Skill Bar -->
-                        <div class="mb-4 sm:mb-6">
-                            <div class="flex justify-between mb-1 sm:mb-2">
-                                <span class="text-sm sm:text-base">React</span>
-                                <span class="text-sm sm:text-base">80%</span>
-                            </div>
-                            <div class="w-full bg-slate-700 rounded-full h-2 sm:h-2.5">
-                                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 sm:h-2.5 rounded-full skill-progress" data-percentage="80"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Skill Bar -->
-                        <div class="mb-4 sm:mb-6">
-                            <div class="flex justify-between mb-1 sm:mb-2">
-                                <span class="text-sm sm:text-base">Python</span>
-                                <span class="text-sm sm:text-base">75%</span>
-                            </div>
-                            <div class="w-full bg-slate-700 rounded-full h-2 sm:h-2.5">
-                                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 sm:h-2.5 rounded-full skill-progress" data-percentage="75"></div>
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 
@@ -343,25 +529,24 @@
                         <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Soft Skills</h3>
                         
                         <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                            <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
-                                <i class="fas fa-users text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
-                                <h4 class="font-bold text-sm sm:text-base">Teamwork</h4>
-                            </div>
-                            
-                            <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
-                                <i class="fas fa-comments text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
-                                <h4 class="font-bold text-sm sm:text-base">Communication</h4>
-                            </div>
-                            
-                            <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
-                                <i class="fas fa-lightbulb text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
-                                <h4 class="font-bold text-sm sm:text-base">Problem Solving</h4>
-                            </div>
-                            
-                            <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
-                                <i class="fas fa-clock text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
-                                <h4 class="font-bold text-sm sm:text-base">Time Management</h4>
-                            </div>
+                            {% if soft_skills %}
+                                {% for skill in soft_skills %}
+                                    <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
+                                        <i class="fas {{ skill.icon }} text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
+                                        <h4 class="font-bold text-sm sm:text-base">{{ skill.name }}</h4>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Placeholder Soft Skills -->
+                                <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
+                                    <i class="fas fa-users text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
+                                    <h4 class="font-bold text-sm sm:text-base">Teamwork</h4>
+                                </div>
+                                <div class="glass-card p-3 sm:p-4 text-center rounded-lg bg-opacity-70">
+                                    <i class="fas fa-comments text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-2"></i>
+                                    <h4 class="font-bold text-sm sm:text-base">Communication</h4>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -380,86 +565,86 @@
                 
                 <!-- Timeline items -->
                 <div class="space-y-8 sm:space-y-12">
-                    <!-- Item 1 - Stacked on mobile, side by side on md screens -->
-                    <div class="relative md:flex md:items-center md:justify-between fade-in">
-                        <!-- Left side (visible only on md+ screens) -->
-                        <div class="hidden md:block md:w-5/12">
-                            <!-- Empty for right alignment -->
+                    {% if experiences %}
+                        {% for experience in experiences %}
+                            <!-- Item {{ forloop.counter }} - Stacked on mobile, side by side on md screens -->
+                            <div class="relative md:flex md:items-center md:justify-between fade-in">
+                                <!-- Left side or Right side (depending on even/odd) -->
+                                {% if forloop.counter|divisibleby:2 %}
+                                    <!-- Left side (Desktop version - even) -->
+                                    <div class="hidden md:block md:w-5/12 glass-card blur-card p-6 rounded-xl text-right">
+                                        <h3 class="text-xl font-bold mb-1">{{ experience.title }}</h3>
+                                        {% if experience.company %}<h4 class="text-blue-400 mb-1">{{ experience.company }}</h4>{% endif %}
+                                        <p class="text-blue-400 mb-2">{{ experience.start_date }} - {{ experience.end_date }}</p>
+                                        <p>{{ experience.description }}</p>
+                                    </div>
+                                    
+                                    <!-- Center dot (hidden on mobile) -->
+                                    <div class="hidden md:flex md:z-10 md:items-center md:justify-center md:w-6 md:h-6 md:bg-blue-400 md:rounded-full">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                    </div>
+                                    
+                                    <!-- Right side (Empty for desktop - even) -->
+                                    <div class="hidden md:block md:w-5/12">
+                                        <!-- Empty for left alignment -->
+                                    </div>
+                                {% else %}
+                                    <!-- Left side (Empty for desktop - odd) -->
+                                    <div class="hidden md:block md:w-5/12">
+                                        <!-- Empty for right alignment -->
+                                    </div>
+                                    
+                                    <!-- Center dot (hidden on mobile) -->
+                                    <div class="hidden md:flex md:z-10 md:items-center md:justify-center md:w-6 md:h-6 md:bg-blue-400 md:rounded-full">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                    </div>
+                                    
+                                    <!-- Right side (Desktop version - odd) -->
+                                    <div class="hidden md:block md:w-5/12 glass-card blur-card p-6 rounded-xl">
+                                        <h3 class="text-xl font-bold mb-1">{{ experience.title }}</h3>
+                                        {% if experience.company %}<h4 class="text-blue-400 mb-1">{{ experience.company }}</h4>{% endif %}
+                                        <p class="text-blue-400 mb-2">{{ experience.start_date }} - {{ experience.end_date }}</p>
+                                        <p>{{ experience.description }}</p>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Mobile version - full width -->
+                                <div class="md:hidden w-full glass-card blur-card p-4 rounded-xl border-l-4 border-blue-400">
+                                    <h3 class="text-lg font-bold mb-1">{{ experience.title }}</h3>
+                                    {% if experience.company %}<h4 class="text-blue-400 text-sm mb-1">{{ experience.company }}</h4>{% endif %}
+                                    <p class="text-blue-400 text-sm mb-2">{{ experience.start_date }} - {{ experience.end_date }}</p>
+                                    <p class="text-sm">{{ experience.description }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Placeholder Experience Item -->
+                        <div class="relative md:flex md:items-center md:justify-between fade-in">
+                            <!-- Left side (visible only on md+ screens) -->
+                            <div class="hidden md:block md:w-5/12">
+                                <!-- Empty for right alignment -->
+                            </div>
+                            
+                            <!-- Center dot (hidden on mobile) -->
+                            <div class="hidden md:flex md:z-10 md:items-center md:justify-center md:w-6 md:h-6 md:bg-blue-400 md:rounded-full">
+                                <div class="w-3 h-3 bg-white rounded-full"></div>
+                            </div>
+                            
+                            <!-- Mobile version - full width -->
+                            <div class="md:hidden w-full glass-card blur-card p-4 rounded-xl border-l-4 border-blue-400">
+                                <h3 class="text-lg font-bold mb-1">Sample Position</h3>
+                                <p class="text-blue-400 text-sm mb-2">2022 - Present</p>
+                                <p class="text-sm">Add experiences in the admin panel to show your work history.</p>
+                            </div>
+                            
+                            <!-- Desktop version - right aligned -->
+                            <div class="hidden md:block md:w-5/12 glass-card blur-card p-6 rounded-xl">
+                                <h3 class="text-xl font-bold mb-1">Sample Position</h3>
+                                <p class="text-blue-400 mb-2">2022 - Present</p>
+                                <p>Add experiences in the admin panel to show your work history.</p>
+                            </div>
                         </div>
-                        
-                        <!-- Center dot (hidden on mobile) -->
-                        <div class="hidden md:flex md:z-10 md:items-center md:justify-center md:w-6 md:h-6 md:bg-blue-400 md:rounded-full">
-                            <div class="w-3 h-3 bg-white rounded-full"></div>
-                        </div>
-                        
-                        <!-- Mobile version - full width -->
-                        <div class="md:hidden w-full glass-card blur-card p-4 rounded-xl border-l-4 border-blue-400">
-                            <h3 class="text-lg font-bold mb-1">Senior Developer</h3>
-                            <p class="text-blue-400 text-sm mb-2">2022 - Present</p>
-                            <p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia.</p>
-                        </div>
-                        
-                        <!-- Desktop version - right aligned -->
-                        <div class="hidden md:block md:w-5/12 glass-card blur-card p-6 rounded-xl">
-                            <h3 class="text-xl font-bold mb-1">Senior Developer</h3>
-                            <p class="text-blue-400 mb-2">2022 - Present</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Item 2 -->
-                    <div class="relative md:flex md:items-center md:justify-between fade-in">
-                        <!-- Left side (Desktop version) -->
-                        <div class="hidden md:block md:w-5/12 glass-card blur-card p-6 rounded-xl text-right">
-                            <h3 class="text-xl font-bold mb-1">Frontend Developer</h3>
-                            <p class="text-blue-400 mb-2">2020 - 2022</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia.</p>
-                        </div>
-                        
-                        <!-- Center dot (hidden on mobile) -->
-                        <div class="hidden md:flex md:z-10 md:items-center md:justify-center md:w-6 md:h-6 md:bg-blue-400 md:rounded-full">
-                            <div class="w-3 h-3 bg-white rounded-full"></div>
-                        </div>
-                        
-                        <!-- Mobile version - full width -->
-                        <div class="md:hidden w-full glass-card blur-card p-4 rounded-xl border-l-4 border-blue-400">
-                            <h3 class="text-lg font-bold mb-1">Frontend Developer</h3>
-                            <p class="text-blue-400 text-sm mb-2">2020 - 2022</p>
-                            <p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia.</p>
-                        </div>
-                        
-                        <!-- Right side (Empty for desktop) -->
-                        <div class="hidden md:block md:w-5/12">
-                            <!-- Empty for left alignment -->
-                        </div>
-                    </div>
-                    
-                    <!-- Item 3 -->
-                    <div class="relative md:flex md:items-center md:justify-between fade-in">
-                        <!-- Left side (visible only on md+ screens) -->
-                        <div class="hidden md:block md:w-5/12">
-                            <!-- Empty for right alignment -->
-                        </div>
-                        
-                        <!-- Center dot (hidden on mobile) -->
-                        <div class="hidden md:flex md:z-10 md:items-center md:justify-center md:w-6 md:h-6 md:bg-blue-400 md:rounded-full">
-                            <div class="w-3 h-3 bg-white rounded-full"></div>
-                        </div>
-                        
-                        <!-- Mobile version - full width -->
-                        <div class="md:hidden w-full glass-card blur-card p-4 rounded-xl border-l-4 border-blue-400">
-                            <h3 class="text-lg font-bold mb-1">Junior Developer</h3>
-                            <p class="text-blue-400 text-sm mb-2">2018 - 2020</p>
-                            <p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia.</p>
-                        </div>
-                        
-                        <!-- Desktop version - right aligned -->
-                        <div class="hidden md:block md:w-5/12 glass-card blur-card p-6 rounded-xl">
-                            <h3 class="text-xl font-bold mb-1">Junior Developer</h3>
-                            <p class="text-blue-400 mb-2">2018 - 2020</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia.</p>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -470,34 +655,74 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center">Get In <span class="gradient-text">Touch</span></h2>
             
+            <!-- Flash Messages -->
+            {% if messages %}
+            <div class="max-w-4xl mx-auto mb-6">
+                {% for message in messages %}
+                <div class="glass-card p-4 rounded-xl mb-4 {% if message.tags == 'alert-success' %}border-l-4 border-green-500 bg-green-500/10{% elif message.tags == 'alert-danger' %}border-l-4 border-red-500 bg-red-500/10{% elif message.tags == 'alert-warning' %}border-l-4 border-yellow-500 bg-yellow-500/10{% elif message.tags == 'alert-info' %}border-l-4 border-blue-500 bg-blue-500/10{% endif %}">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 mr-4">
+                            {% if message.tags == 'alert-success' %}
+                                <i class="fas fa-check-circle text-green-500"></i>
+                            {% elif message.tags == 'alert-danger' %}
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                            {% elif message.tags == 'alert-warning' %}
+                                <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                            {% elif message.tags == 'alert-info' %}
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <p class="{% if message.tags == 'alert-success' %}text-green-500{% elif message.tags == 'alert-danger' %}text-red-500{% elif message.tags == 'alert-warning' %}text-yellow-500{% elif message.tags == 'alert-info' %}text-blue-500{% else %}text-white{% endif %}">
+                                {{ message }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
             <div class="max-w-4xl mx-auto">
                 <div class="glass-card blur-card p-4 sm:p-8 rounded-xl sm:rounded-2xl">
                     <!-- Contact Form Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                         <!-- Left Side: Form -->
                         <div>
-                            <form>
+                            <form method="post" action="#contact">
+                                {% csrf_token %}
                                 <div class="mb-4 sm:mb-6">
                                     <label for="name" class="block text-sm sm:text-base font-medium mb-2 text-white">Your Name</label>
-                                    <input type="text" id="name" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base">
+                                    <input type="text" id="name" name="name" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/90 border border-slate-300 text-slate-900 focus:outline-none inputContactText focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base" required>
                                 </div>
                                 
                                 <div class="mb-4 sm:mb-6">
                                     <label for="email" class="block text-sm sm:text-base font-medium mb-2 text-white">Your Email</label>
-                                    <input type="email" id="email" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base">
+                                    <input type="email" id="email" name="email" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/90 border border-slate-300 text-slate-900 focus:outline-none inputContactText focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base" required>
                                 </div>
                                 
                                 <div class="mb-4 sm:mb-6">
                                     <label for="subject" class="block text-sm sm:text-base font-medium mb-2 text-white">Subject</label>
-                                    <input type="text" id="subject" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base">
+                                    <input type="text" id="subject" name="subject" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/90 border border-slate-300 text-slate-900 focus:outline-none inputContactText focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base" required>
                                 </div>
                                 
                                 <div class="mb-4 sm:mb-6">
                                     <label for="message" class="block text-sm sm:text-base font-medium mb-2 text-white">Message</label>
-                                    <textarea id="message" rows="5" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base"></textarea>
+                                    <textarea id="message" name="message" rows="5" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/90 border border-slate-300 text-slate-900 focus:outline-none inputContactText focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base" required></textarea>
                                 </div>
                                 
-                                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-400 text-white py-2 sm:py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 text-sm sm:text-base">
+                                <!-- Add reCAPTCHA -->
+                                <div class="mb-6">
+                                    <div class="g-recaptcha" 
+                                         data-sitekey="6LebYTorAAAAADP9upGmX_BZr0trgvos2OiaUoj0"
+                                         data-callback="recaptchaCallback"
+                                         data-expired-callback="recaptchaExpiredCallback"></div>
+                                    <p class="text-xs text-slate-400 mt-2">I'm not a robot</p>
+                                </div>
+                                
+                                <button id="contact-submit-btn" type="submit" 
+                                        class="w-full bg-gradient-to-r from-blue-500 to-cyan-400 text-white py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 text-sm sm:text-base opacity-50 cursor-not-allowed" 
+                                        disabled>
                                     Send Message
                                 </button>
                             </form>
@@ -510,40 +735,67 @@
                                 <p class="text-slate-300 mb-6 text-sm sm:text-base">Feel free to reach out to me any time. I prefer to talk over email, especially since I'm in different time zones.</p>
                                 
                                 <ul class="space-y-4 mb-8">
+                                    {% if profile and profile.email %}
                                     <li class="flex items-start">
                                         <div class="bg-blue-500/20 p-2 sm:p-3 rounded-lg mr-3">
                                             <i class="fas fa-envelope text-blue-400"></i>
                                         </div>
                                         <div>
                                             <h4 class="text-sm sm:text-base font-medium text-white">Email</h4>
-                                            <p class="text-slate-300 text-sm">your.email@example.com</p>
+                                            <p class="text-slate-300 text-sm">{{ profile.email }}</p>
                                         </div>
                                     </li>
+                                    {% endif %}
                                     
+                                    {% if profile and profile.phone %}
+                                    <li class="flex items-start">
+                                        <div class="bg-blue-500/20 p-2 sm:p-3 rounded-lg mr-3">
+                                            <i class="fas fa-phone text-blue-400"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm sm:text-base font-medium text-white">Phone</h4>
+                                            <p class="text-slate-300 text-sm">{{ profile.phone }}</p>
+                                        </div>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% if profile and profile.location %}
                                     <li class="flex items-start">
                                         <div class="bg-blue-500/20 p-2 sm:p-3 rounded-lg mr-3">
                                             <i class="fas fa-map-marker-alt text-blue-400"></i>
                                         </div>
                                         <div>
                                             <h4 class="text-sm sm:text-base font-medium text-white">Location</h4>
-                                            <p class="text-slate-300 text-sm">San Francisco, CA</p>
+                                            <p class="text-slate-300 text-sm">{{ profile.location }}</p>
                                         </div>
                                     </li>
+                                    {% endif %}
                                 </ul>
                             </div>
                             
                             <div class="mt-6 sm:mt-0">
                                 <h4 class="text-sm sm:text-base font-medium text-white mb-3">Follow Me</h4>
                                 <div class="flex space-x-3">
-                                    <a href="#" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
+                                    {% if profile and profile.github %}
+                                    <a href="{{ profile.github }}" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
                                         <i class="fab fa-github"></i>
                                     </a>
-                                    <a href="#" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
-                                        <i class="fab fa-twitter"></i>
+                                    {% endif %}
+                                    {% if profile and profile.facebook %}
+                                    <a href="{{ profile.facebook }}" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
+                                        <i class="fab fa-facebook-f"></i>
                                     </a>
-                                    <a href="#" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
+                                    {% endif %}
+                                    {% if profile and profile.linkedin %}
+                                    <a href="{{ profile.linkedin }}" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
                                         <i class="fab fa-linkedin-in"></i>
                                     </a>
+                                    {% endif %}
+                                    {% if profile and profile.instagram %}
+                                    <a href="{{ profile.instagram }}" class="bg-slate-800/80 hover:bg-blue-500 hover:text-white transition-colors w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-blue-400">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -557,5 +809,45 @@
 {% block scripts %}
 <script src="/static/js/home.js"></script>
 <link rel="stylesheet" href="/static/css/home.css">
+<script>
+    // Project Modal Functions
+    function openProjectModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        }
+    }
+    
+    function closeProjectModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
+    
+    // Close modal when clicking outside the content
+    document.addEventListener('click', function(event) {
+        const modals = document.querySelectorAll('.project-modal.active');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                const modalId = modal.getAttribute('id');
+                closeProjectModal(modalId);
+            }
+        });
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const modals = document.querySelectorAll('.project-modal.active');
+            modals.forEach(modal => {
+                const modalId = modal.getAttribute('id');
+                closeProjectModal(modalId);
+            });
+        }
+    });
+</script>
 {% endblock %}
 
