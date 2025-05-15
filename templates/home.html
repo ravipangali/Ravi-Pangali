@@ -114,7 +114,6 @@
                             <span class="typewriter-text hero-subtitle relative inline-block">
                                 {% if profile %}{{ profile.title }}{% endif %}
                             </span>
-                            <span class="typing-cursor"></span>
                         </h2>
                         
                         <!-- Enhanced buttons -->
@@ -242,7 +241,7 @@
                             </div>
                             <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">{{ project.title }}</h3>
                             <div class="description-truncate text-slate-300 mb-3 sm:mb-4 text-sm sm:text-base">
-                                {{ project.description|truncatechars:150 }}
+                                {{ project.description|truncatewords:15 }}
                             </div>
                             <button class="see-more-btn text-blue-400 mb-4 sm:mb-6 text-sm" 
                                     onclick="openProjectModal('project-modal-{{ project.id }}')">
@@ -650,6 +649,8 @@
 <!-- Fallback if JS is disabled -->
 <noscript><link rel="stylesheet" href="/static/css/home.css"></noscript>
 
+<!-- Make sure main.js loads before home.js to ensure futuristicTextEffect is available -->
+<script src="/static/js/main.js" defer></script>
 <!-- Load JS at the end with defer attribute -->
 <script src="/static/js/home.js" defer></script>
 
