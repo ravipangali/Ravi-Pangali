@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -59,6 +59,10 @@ def home(request):
     soft_skills = SoftSkill.objects.all()
     experiences = Experience.objects.all()
     
+    # SEO Context
+    meta_description = profile.meta_description if profile and profile.meta_description else f"Professional Portfolio of {profile.name if profile else 'Ravi Pangali'} - {profile.title if profile else 'Full Stack Developer'}"
+    meta_keywords = profile.meta_keywords if profile and profile.meta_keywords else "developer, portfolio, web development, full stack"
+    
     context = {
         'profile': profile,
         'about': about,
@@ -66,7 +70,39 @@ def home(request):
         'technical_skills': technical_skills,
         'soft_skills': soft_skills,
         'experiences': experiences,
+        'meta_description': meta_description,
+        'meta_keywords': meta_keywords,
+        'canonical_url': request.build_absolute_uri(),
     }
     
     return render(request, 'home.html', context)
+
+def project_detail(request, project_id):
+    """Display details for a specific project"""
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Get profile for context
+    try:
+        profile = Profile.objects.first()
+    except Profile.DoesNotExist:
+        profile = None
+    
+    # Get canonical URL for this project
+    canonical_url = request.build_absolute_uri()
+    
+    # SEO metadata
+    meta_title = project.meta_title if project.meta_title else f"{project.title} | {profile.name if profile else 'Ravi Pangali'} Portfolio"
+    meta_description = project.meta_description if project.meta_description else project.description[:157] + "..."
+    meta_keywords = project.meta_keywords if project.meta_keywords else f"developer, portfolio, project, {profile.name if profile else 'Ravi Pangali'}, {project.title}"
+    
+    context = {
+        'project': project,
+        'profile': profile,
+        'canonical_url': canonical_url,
+        'meta_title': meta_title,
+        'meta_description': meta_description,
+        'meta_keywords': meta_keywords,
+    }
+    
+    return render(request, 'project_detail.html', context)
 

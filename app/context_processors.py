@@ -11,4 +11,12 @@ def profile_context(request):
     
     return {
         'profile': profile
+    }
+
+def site_context(request):
+    """Add site-wide context variables"""
+    return {
+        'is_secure': request.is_secure(),
+        'site_domain': request.get_host(),
+        'site_url': request.build_absolute_uri('/').rstrip('/'),
     } 

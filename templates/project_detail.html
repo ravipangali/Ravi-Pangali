@@ -1,0 +1,165 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{ meta_title }}{% endblock %}
+
+{% block meta_tags %}
+<!-- SEO Meta Tags -->
+<meta name="description" content="{{ meta_description }}">
+<meta name="keywords" content="{{ meta_keywords }}">
+<meta name="author" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}">
+
+<!-- Enhanced Open Graph / Social Media Meta Tags -->
+<meta property="og:title" content="{{ meta_title }}">
+<meta property="og:description" content="{{ meta_description }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ canonical_url }}">
+{% if project.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ project.image.url }}">
+<meta property="og:image:alt" content="{{ project.title }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/webp">
+{% endif %}
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ meta_title }}">
+<meta name="twitter:description" content="{{ meta_description }}">
+{% if project.image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ project.image.url }}">
+<meta name="twitter:image:alt" content="{{ project.title }}">
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="py-16 sm:py-20 relative">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col items-center gap-8">
+            <!-- Back button -->
+            <a href="{% url 'home' %}#projects" class="self-start flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Projects
+            </a>
+            
+            <!-- Project title -->
+            <h1 class="text-3xl sm:text-4xl font-bold mb-6 text-center">{{ project.title }}</h1>
+            
+            <!-- Project image -->
+            <div class="w-full max-w-3xl rounded-xl overflow-hidden mb-8">
+                {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-auto">
+                {% else %}
+                <div class="bg-slate-800 h-64 flex items-center justify-center">
+                    <span class="text-slate-400">No image available</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Project details -->
+            <div class="glass-card blur-card p-6 sm:p-8 rounded-xl w-full max-w-3xl">
+                <!-- Social Sharing Buttons -->
+                <div class="flex flex-wrap gap-3 mb-6 justify-center sm:justify-start">
+                    <h3 class="w-full text-blue-400 text-sm mb-2">Share this project:</h3>
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" 
+                       target="_blank" rel="noopener noreferrer"
+                       class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg flex items-center text-sm transition-colors">
+                        <i class="fab fa-facebook-f mr-2"></i>
+                        <span>Facebook</span>
+                    </a>
+                    
+                    <!-- Twitter -->
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ project.title|urlencode }}%20-%20{{ project.description|truncatechars:100|urlencode }}"
+                       target="_blank" rel="noopener noreferrer"
+                       class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded-lg flex items-center text-sm transition-colors">
+                        <i class="fab fa-twitter mr-2"></i>
+                        <span>Twitter</span>
+                    </a>
+                    
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ project.title|urlencode }}&summary={{ project.description|truncatechars:100|urlencode }}"
+                       target="_blank" rel="noopener noreferrer"
+                       class="bg-blue-800 hover:bg-blue-900 text-white px-3 py-2 rounded-lg flex items-center text-sm transition-colors">
+                        <i class="fab fa-linkedin-in mr-2"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/?text={{ project.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
+                       target="_blank" rel="noopener noreferrer"
+                       class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg flex items-center text-sm transition-colors">
+                        <i class="fab fa-whatsapp mr-2"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+                
+                <!-- Technologies -->
+                {% if project.technologies.all %}
+                <div class="flex flex-wrap gap-2 mb-6">
+                    {% for tech in project.technologies.all %}
+                    <span class="px-3 py-1 bg-blue-500/20 rounded-lg text-sm text-blue-300">{{ tech.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Description -->
+                <div class="prose prose-lg prose-invert max-w-none">
+                    <p>{{ project.description|linebreaks }}</p>
+                </div>
+                
+                <!-- Project link if available -->
+                {% if project.link %}
+                <div class="mt-8">
+                    <a href="{{ project.link }}" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl 
+                              text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30">
+                        View Project
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" 
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "{{ project.title }}",
+  "description": "{{ meta_description }}",
+  "url": "{{ canonical_url }}",
+  "datePublished": "{{ project.created_at|date:'Y-m-d' }}",
+  "dateModified": "{{ project.updated_at|date:'Y-m-d' }}",
+  {% if project.image %}
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{{ project.image.url }}",
+    "width": "1200",
+    "height": "630",
+    "encodingFormat": "image/webp"
+  },
+  {% endif %}
+  "author": {
+    "@type": "Person",
+    "name": "{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+    {% if profile and profile.avatar %}
+    ,"image": "{{ request.scheme }}://{{ request.get_host }}{{ profile.avatar.url }}"
+    {% endif %}
+  }
+  {% if project.link %},
+  "mainEntityOfPage": "{{ project.link }}"
+  {% endif %}
+  {% if project.technologies.all %},
+  "keywords": "{% for tech in project.technologies.all %}{{ tech.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+  {% endif %}
+}
+</script>
+{% endblock %} 

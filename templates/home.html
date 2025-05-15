@@ -1,20 +1,34 @@
 {% extends "base/base.html" %}
 
-{% block head %}
+{% block meta_tags %}
 <!-- SEO Meta Tags -->
-<meta name="description" content="{% if profile %}{{ profile.title }}{% else %}Professional Portfolio of Ravi Pangali - Full Stack Developer crafting elegant, user-friendly web applications{% endif %}">
-<meta name="keywords" content="developer, portfolio, web development, full stack, {% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}">
+<meta name="description" content="{{ meta_description }}">
+<meta name="keywords" content="{{ meta_keywords }}">
 <meta name="author" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %}">
 
-<!-- Open Graph / Social Media Meta Tags -->
-<meta property="og:title" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %} - Portfolio">
-<meta property="og:description" content="{% if profile %}{{ profile.title }}{% else %}Professional Portfolio of Ravi Pangali - Full Stack Developer{% endif %}">
+<!-- Enhanced Open Graph / Social Media Meta Tags -->
+<meta property="og:title" content="{% if profile %}{{ profile.name }} - {{ profile.title }}{% else %}Ravi Pangali - Full Stack Developer{% endif %}">
+<meta property="og:description" content="{{ meta_description }}">
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:url" content="{{ canonical_url }}">
 {% if profile and profile.avatar %}
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.avatar.url }}">
+<meta property="og:image:alt" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %} Profile Picture">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/webp">
 {% endif %}
 
+<!-- Twitter Card Tags -->
+<meta name="twitter:title" content="{% if profile %}{{ profile.name }} - {{ profile.title }}{% else %}Ravi Pangali - Full Stack Developer{% endif %}">
+<meta name="twitter:description" content="{{ meta_description }}">
+{% if profile and profile.avatar %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.avatar.url }}">
+<meta name="twitter:image:alt" content="{% if profile %}{{ profile.name }}{% else %}Ravi Pangali{% endif %} Profile Picture">
+{% endif %}
+{% endblock %}
+
+{% block head %}
 <!-- Three.js specifically for home page 3D elements - load with defer -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
 
@@ -243,11 +257,17 @@
                             <div class="description-truncate text-slate-300 mb-3 sm:mb-4 text-sm sm:text-base">
                                 {{ project.description|truncatewords:15 }}
                             </div>
-                            <button class="see-more-btn text-blue-400 mb-4 sm:mb-6 text-sm" 
-                                    onclick="openProjectModal('project-modal-{{ project.id }}')">
-                                <span>See more</span>
-                                <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                            </button>
+                            <div class="flex space-x-4 mb-4 sm:mb-6">
+                                <button class="see-more-btn text-blue-400 text-sm" 
+                                        onclick="openProjectModal('project-modal-{{ project.id }}')">
+                                    <span>Quick view</span>
+                                    <i class="fas fa-search ml-2 text-xs"></i>
+                                </button>
+                                <a href="{% url 'project_detail' project.id %}" class="text-blue-400 text-sm hover:text-blue-300 transition-colors">
+                                    <span>Full details</span>
+                                    <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                                </a>
+                            </div>
                             <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
                                 {% for tech in project.technologies.all %}
                                     <span class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs sm:text-sm">{{ tech.name }}</span>
@@ -263,7 +283,7 @@
                         </div>
                         
                         <!-- Project Modal -->
-                        <div id="project-modal-{{ project.id }}" class="project-modal">
+                        <div style="margin-top: 3.5rem;" id="project-modal-{{ project.id }}" class="project-modal">
                             <div class="modal-content glass-card blur-card p-6 sm:p-8 rounded-xl sm:rounded-2xl relative">
                                 <button class="close-modal-btn" onclick="closeProjectModal('project-modal-{{ project.id }}')">
                                     <i class="fas fa-times text-white"></i>
@@ -303,6 +323,13 @@
                                     </a>
                                 </div>
                                 {% endif %}
+                                
+                                <div class="mt-4 {% if project.link %}ml-4 inline-block{% endif %}">
+                                    <a href="{% url 'project_detail' project.id %}" class="px-6 py-3 bg-blue-500/20 border border-blue-400/30 rounded-xl text-blue-400 font-medium text-sm sm:text-base transition-all duration-300 hover:bg-blue-500/30 inline-flex items-center">
+                                        <span>Full Details</span>
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
