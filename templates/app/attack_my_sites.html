@@ -29,30 +29,16 @@
         <!-- Main Container -->
         <div class="bg-slate-800/30 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
             <div class="p-8 md:p-12">
-                <!-- Messages -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="mb-6 p-4 rounded-2xl border {% if message.tags == 'success' %}bg-green-500/10 border-green-500/20 text-green-400{% elif message.tags == 'error' %}bg-red-500/10 border-red-500/20 text-red-400{% else %}bg-yellow-500/10 border-yellow-500/20 text-yellow-400{% endif %}">
-                            <div class="flex items-center">
-                                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} mr-3"></i>
-                                {{ message }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                
-                <!-- Error Display -->
-                {% if error %}
-                    <div class="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400">
-                        <div class="flex items-center">
-                            <i class="fas fa-exclamation-triangle mr-3"></i>
-                            {{ error }}
-                        </div>
+                <!-- Alert Container -->
+                <div id="alert-container" class="mb-6 hidden">
+                    <div id="alert-content" class="p-4 rounded-2xl border flex items-center">
+                        <i id="alert-icon" class="mr-3"></i>
+                        <span id="alert-message"></span>
                     </div>
-                {% endif %}
+                </div>
                 
                 <!-- Main Form -->
-                <form method="post" id="attackForm" class="space-y-8">
+                <form id="attackForm" class="space-y-8">
                     {% csrf_token %}
                     
                     <!-- Site URL -->
@@ -66,13 +52,12 @@
                             id="site_url" 
                             name="site_url" 
                             placeholder="https://example.com"
-                            value="{{ form_data.site_url|default:'' }}"
                             required
-                            class="w-full px-6 py-4 bg-slate-700/50 border border-slate-600/50 rounded-2xl text-gray-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
+                            class="w-full px-6 py-4 bg-slate-700/50 border border-slate-600/50 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
                         >
                         <div class="mt-3 p-3 bg-slate-700/30 rounded-xl">
                             <small class="text-slate-400">
-                                Target will be: <span id="target_url_preview" class="text-blue-400 font-mono">{{ form_data.site_url|default:'[site-url]' }}/change-site-status</span>
+                                Target will be: <span id="target_url_preview" class="text-blue-400 font-mono">[site-url]/change-site-status</span>
                             </small>
                         </div>
                     </div>
@@ -85,76 +70,32 @@
                         </label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- True Option -->
-                            <div class="status-option cursor-pointer p-6 rounded-2xl border-3 transition-all duration-300 transform hover:scale-105 
-                                {% if form_data.status == 'true' %}
-                                    border-green-400 bg-green-500/20 shadow-lg shadow-green-500/25 ring-2 ring-green-400/50
-                                {% else %}
-                                    border-slate-600/50 bg-slate-700/30 hover:border-green-500/50 hover:bg-green-500/10
-                                {% endif %}" 
-                                data-value="true">
+                            <div class="status-option cursor-pointer p-6 rounded-2xl border-3 transition-all duration-300 transform hover:scale-105 border-slate-600/50 bg-slate-700/30 hover:border-green-500/50 hover:bg-green-500/10" data-value="true">
                                 <div class="text-center">
-                                    <div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-300
-                                        {% if form_data.status == 'true' %}
-                                            bg-green-400 text-white shadow-lg
-                                        {% else %}
-                                            bg-green-500/20 text-green-400
-                                        {% endif %}">
+                                    <div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-300 bg-green-500/20 text-green-400">
                                         <i class="fas fa-check text-xl"></i>
                                     </div>
-                                    <div class="font-semibold text-lg transition-all duration-300
-                                        {% if form_data.status == 'true' %}
-                                            text-green-300
-                                        {% else %}
-                                            text-white
-                                        {% endif %}">True</div>
+                                    <div class="font-semibold text-lg transition-all duration-300 text-white">True</div>
                                     <div class="text-slate-400 text-sm mt-1">Site is active</div>
-                                    {% if form_data.status == 'true' %}
-                                        <div class="mt-2">
-                                            <i class="fas fa-check-circle text-green-400 text-sm"></i>
-                                            <span class="text-green-400 text-xs font-medium ml-1">SELECTED</span>
-                                        </div>
-                                    {% endif %}
                                 </div>
                             </div>
                             
                             <!-- False Option -->
-                            <div class="status-option cursor-pointer p-6 rounded-2xl border-3 transition-all duration-300 transform hover:scale-105
-                                {% if form_data.status == 'false' %}
-                                    border-red-400 bg-red-500/20 shadow-lg shadow-red-500/25 ring-2 ring-red-400/50
-                                {% else %}
-                                    border-slate-600/50 bg-slate-700/30 hover:border-red-500/50 hover:bg-red-500/10
-                                {% endif %}" 
-                                data-value="false">
+                            <div class="status-option cursor-pointer p-6 rounded-2xl border-3 transition-all duration-300 transform hover:scale-105 border-slate-600/50 bg-slate-700/30 hover:border-red-500/50 hover:bg-red-500/10" data-value="false">
                                 <div class="text-center">
-                                    <div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-300
-                                        {% if form_data.status == 'false' %}
-                                            bg-red-400 text-white shadow-lg
-                                        {% else %}
-                                            bg-red-500/20 text-red-400
-                                        {% endif %}">
+                                    <div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-300 bg-red-500/20 text-red-400">
                                         <i class="fas fa-times text-xl"></i>
                                     </div>
-                                    <div class="font-semibold text-lg transition-all duration-300
-                                        {% if form_data.status == 'false' %}
-                                            text-red-300
-                                        {% else %}
-                                            text-white
-                                        {% endif %}">False</div>
+                                    <div class="font-semibold text-lg transition-all duration-300 text-white">False</div>
                                     <div class="text-slate-400 text-sm mt-1">Site is inactive</div>
-                                    {% if form_data.status == 'false' %}
-                                        <div class="mt-2">
-                                            <i class="fas fa-check-circle text-red-400 text-sm"></i>
-                                            <span class="text-red-400 text-xs font-medium ml-1">SELECTED</span>
-                                        </div>
-                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden" id="status" name="status" value="{{ form_data.status|default:'' }}">
+                        <input type="hidden" id="status" name="status" value="">
                     </div>
                     
                     <!-- Description (conditional) -->
-                    <div class="description-group space-y-4 {% if form_data.status == 'false' %}block{% else %}hidden{% endif %}" id="description_group">
+                    <div class="description-group space-y-4 hidden" id="description_group">
                         <label for="description" class="block text-lg font-semibold text-white">
                             <i class="fas fa-edit mr-2 text-yellow-400"></i>
                             Description
@@ -165,7 +106,7 @@
                             rows="4"
                             placeholder="Enter description for why the site status is being set to false..."
                             class="w-full px-6 py-4 bg-slate-700/50 border border-slate-600/50 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 resize-vertical"
-                        >{{ form_data.description|default:'' }}</textarea>
+                        ></textarea>
                         <small class="text-slate-400 block">
                             <i class="fas fa-info-circle mr-1"></i>
                             Required when status is False
@@ -180,92 +121,92 @@
                 </form>
                 
                 <!-- Results Display -->
-                {% if result %}
-                    <div class="mt-12 bg-slate-700/30 border border-slate-600/50 rounded-3xl p-8">
-                        <div class="flex items-center justify-between mb-8">
-                            <h3 class="text-2xl font-bold text-white flex items-center">
-                                <i class="fas fa-chart-line mr-3 text-blue-400"></i>
-                                Request Result
-                            </h3>
-                            <span class="px-4 py-2 rounded-full text-sm font-semibold {% if result.success %}bg-green-500/20 text-green-400{% else %}bg-red-500/20 text-red-400{% endif %}">
-                                {% if result.success %}
-                                    <i class="fas fa-check-circle mr-1"></i>Success
-                                {% else %}
-                                    <i class="fas fa-exclamation-circle mr-1"></i>Error
-                                {% endif %}
-                            </span>
+                <div id="results-container" class="mt-12 bg-slate-700/30 border border-slate-600/50 rounded-3xl p-8 hidden">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-bold text-white flex items-center">
+                            <i class="fas fa-chart-line mr-3 text-blue-400"></i>
+                            Request Result
+                        </h3>
+                        <span id="status-badge" class="px-4 py-2 rounded-full text-sm font-semibold">
+                            <!-- Status will be inserted here -->
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- Target URL -->
+                        <div>
+                            <div class="flex items-center text-slate-300 font-semibold mb-2">
+                                <i class="fas fa-bullseye mr-2 text-blue-400"></i>
+                                Target URL
+                            </div>
+                            <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4">
+                                <code id="result-target-url" class="text-blue-400 font-mono text-sm break-all"></code>
+                            </div>
                         </div>
                         
-                        <div class="space-y-6">
-                            <!-- Target URL -->
-                            <div>
-                                <div class="flex items-center text-slate-300 font-semibold mb-2">
-                                    <i class="fas fa-bullseye mr-2 text-blue-400"></i>
-                                    Target URL
+                        <!-- POST Data -->
+                        <div>
+                            <div class="flex items-center text-slate-300 font-semibold mb-2">
+                                <i class="fas fa-upload mr-2 text-green-400"></i>
+                                POST Data
+                            </div>
+                            <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4">
+                                <pre id="result-post-data" class="text-green-400 font-mono text-sm overflow-x-auto"></pre>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Code -->
+                        <div>
+                            <div class="flex items-center text-slate-300 font-semibold mb-2">
+                                <i class="fas fa-signal mr-2 text-yellow-400"></i>
+                                Status Code
+                            </div>
+                            <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4">
+                                <span id="result-status-code" class="text-yellow-400 font-mono text-lg font-bold"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Response Section with Toggle -->
+                        <div id="response-section" class="hidden">
+                            <div class="flex items-center justify-between text-slate-300 font-semibold mb-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-code mr-2 text-purple-400"></i>
+                                    Response
                                 </div>
-                                <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4">
-                                    <code class="text-blue-400 font-mono text-sm break-all">{{ result.target_url }}</code>
+                                <!-- View Mode Toggle -->
+                                <div class="flex bg-slate-800/50 rounded-lg p-1">
+                                    <button type="button" id="raw-view-btn" class="px-3 py-1 text-xs font-medium rounded transition-all duration-200 bg-purple-500/30 text-purple-300">
+                                        Raw
+                                    </button>
+                                    <button type="button" id="preview-view-btn" class="px-3 py-1 text-xs font-medium rounded transition-all duration-200 text-slate-400 hover:text-slate-300">
+                                        Preview
+                                    </button>
                                 </div>
                             </div>
                             
-                            <!-- POST Data -->
-                            <div>
-                                <div class="flex items-center text-slate-300 font-semibold mb-2">
-                                    <i class="fas fa-upload mr-2 text-green-400"></i>
-                                    POST Data
-                                </div>
-                                <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4">
-                                    <pre class="text-green-400 font-mono text-sm overflow-x-auto">{{ result.post_data|pprint }}</pre>
-                                </div>
+                            <!-- Raw View -->
+                            <div id="raw-view" class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4 max-h-80 overflow-y-auto">
+                                <pre id="result-response-raw" class="text-purple-400 font-mono text-sm"></pre>
                             </div>
                             
-                            <!-- Status Code -->
-                            <div>
-                                <div class="flex items-center text-slate-300 font-semibold mb-2">
-                                    <i class="fas fa-signal mr-2 text-yellow-400"></i>
-                                    Status Code
-                                </div>
-                                <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4">
-                                    <span class="text-yellow-400 font-mono text-lg font-bold">{{ result.status_code }}</span>
-                                </div>
+                            <!-- Preview View -->
+                            <div id="preview-view" class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4 max-h-96 overflow-y-auto hidden">
+                                <div id="result-response-preview" class="text-slate-300 text-sm"></div>
                             </div>
-                            
-                            <!-- Response -->
-                            {% if result.response_json %}
-                                <div>
-                                    <div class="flex items-center text-slate-300 font-semibold mb-2">
-                                        <i class="fas fa-code mr-2 text-purple-400"></i>
-                                        Response JSON
-                                    </div>
-                                    <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4 max-h-80 overflow-y-auto">
-                                        <pre class="text-purple-400 font-mono text-sm">{{ result.response_json|pprint }}</pre>
-                                    </div>
-                                </div>
-                            {% elif result.response_text %}
-                                <div>
-                                    <div class="flex items-center text-slate-300 font-semibold mb-2">
-                                        <i class="fas fa-file-alt mr-2 text-purple-400"></i>
-                                        Response Text
-                                    </div>
-                                    <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4 max-h-80 overflow-y-auto">
-                                        <pre class="text-purple-400 font-mono text-sm">{{ result.response_text }}</pre>
-                                    </div>
-                                </div>
-                            {% endif %}
-                            
-                            <!-- Response Headers -->
-                            <div>
-                                <div class="flex items-center text-slate-300 font-semibold mb-2">
-                                    <i class="fas fa-list mr-2 text-cyan-400"></i>
-                                    Response Headers
-                                </div>
-                                <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4 max-h-80 overflow-y-auto">
-                                    <pre class="text-cyan-400 font-mono text-sm">{{ result.headers|pprint }}</pre>
-                                </div>
+                        </div>
+                        
+                        <!-- Response Headers -->
+                        <div>
+                            <div class="flex items-center text-slate-300 font-semibold mb-2">
+                                <i class="fas fa-list mr-2 text-cyan-400"></i>
+                                Response Headers
+                            </div>
+                            <div class="bg-slate-800/50 border border-slate-600/30 rounded-xl p-4 max-h-80 overflow-y-auto">
+                                <pre id="result-headers" class="text-cyan-400 font-mono text-sm"></pre>
                             </div>
                         </div>
                     </div>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -274,6 +215,85 @@
 
 {% block scripts %}
 <script>
+    // CSRF Token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Store response data globally for view switching
+    let currentResponseData = null;
+    
+    // Alert functions
+    function showAlert(message, type = 'error') {
+        const alertContainer = document.getElementById('alert-container');
+        const alertContent = document.getElementById('alert-content');
+        const alertIcon = document.getElementById('alert-icon');
+        const alertMessage = document.getElementById('alert-message');
+        
+        // Set content
+        alertMessage.textContent = message;
+        
+        // Reset classes
+        alertContent.className = 'p-4 rounded-2xl border flex items-center';
+        alertIcon.className = 'mr-3';
+        
+        // Apply styling based on type
+        if (type === 'success') {
+            alertContent.classList.add('bg-green-500/10', 'border-green-500/20', 'text-green-400');
+            alertIcon.classList.add('fas', 'fa-check-circle');
+        } else if (type === 'warning') {
+            alertContent.classList.add('bg-yellow-500/10', 'border-yellow-500/20', 'text-yellow-400');
+            alertIcon.classList.add('fas', 'fa-info-circle');
+        } else {
+            alertContent.classList.add('bg-red-500/10', 'border-red-500/20', 'text-red-400');
+            alertIcon.classList.add('fas', 'fa-exclamation-triangle');
+        }
+        
+        // Show alert
+        alertContainer.classList.remove('hidden');
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            alertContainer.classList.add('hidden');
+        }, 5000);
+    }
+    
+    // Function to detect if content is HTML
+    function isHtmlContent(content, headers = {}) {
+        if (typeof content !== 'string') return false;
+        
+        // Check content type header
+        const contentType = headers['content-type'] || headers['Content-Type'] || '';
+        if (contentType.toLowerCase().includes('text/html')) {
+            return true;
+        }
+        
+        // Check if content starts with HTML-like structure
+        const trimmedContent = content.trim();
+        const htmlIndicators = [
+            /^<!DOCTYPE\s+html/i,
+            /^<html[^>]*>/i,
+            /^<\!--/,
+            /<html[^>]*>/i,
+            /<head[^>]*>/i,
+            /<body[^>]*>/i,
+            /<div[^>]*>/i,
+            /<title[^>]*>/i
+        ];
+        
+        return htmlIndicators.some(regex => regex.test(trimmedContent));
+    }
+    
+    // Function to detect if content is JSON
+    function isJsonContent(content) {
+        if (typeof content !== 'string') return false;
+        
+        try {
+            JSON.parse(content);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    
     // Status selection functionality with enhanced visual feedback
     document.querySelectorAll('.status-option').forEach(option => {
         option.addEventListener('click', function() {
@@ -370,20 +390,279 @@
         }
     });
     
-    // Form submission with loading state
-    document.getElementById('attackForm').addEventListener('submit', function() {
-        const submitBtn = document.getElementById('submit_btn');
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending Request...';
-        submitBtn.disabled = true;
+    // Response view toggle functionality
+    document.getElementById('raw-view-btn').addEventListener('click', function() {
+        // Switch to Raw view
+        document.getElementById('raw-view').classList.remove('hidden');
+        document.getElementById('preview-view').classList.add('hidden');
+        
+        // Update button styles
+        this.classList.add('bg-purple-500/30', 'text-purple-300');
+        this.classList.remove('text-slate-400');
+        
+        document.getElementById('preview-view-btn').classList.remove('bg-purple-500/30', 'text-purple-300');
+        document.getElementById('preview-view-btn').classList.add('text-slate-400');
     });
     
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        // Update target URL preview if site URL is pre-filled
-        const siteUrlInput = document.getElementById('site_url');
-        if (siteUrlInput.value) {
-            siteUrlInput.dispatchEvent(new Event('input'));
+    document.getElementById('preview-view-btn').addEventListener('click', function() {
+        // Switch to Preview view
+        document.getElementById('preview-view').classList.remove('hidden');
+        document.getElementById('raw-view').classList.add('hidden');
+        
+        // Update button styles
+        this.classList.add('bg-purple-500/30', 'text-purple-300');
+        this.classList.remove('text-slate-400');
+        
+        document.getElementById('raw-view-btn').classList.remove('bg-purple-500/30', 'text-purple-300');
+        document.getElementById('raw-view-btn').classList.add('text-slate-400');
+        
+        // Re-render preview with current data
+        if (currentResponseData) {
+            renderPreviewContent(currentResponseData);
         }
     });
+    
+    // Form submission with AJAX
+    document.getElementById('attackForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submit_btn');
+        const originalContent = submitBtn.innerHTML;
+        
+        // Get form data
+        const formData = {
+            site_url: document.getElementById('site_url').value.trim(),
+            status: document.getElementById('status').value,
+            description: document.getElementById('description').value.trim()
+        };
+        
+        // Validate required fields
+        if (!formData.site_url) {
+            showAlert('Please enter a site URL');
+            return;
+        }
+        
+        if (!formData.status) {
+            showAlert('Please select a status (True or False)');
+            return;
+        }
+        
+        if (formData.status === 'false' && !formData.description) {
+            showAlert('Description is required when status is False');
+            return;
+        }
+        
+        // Update button to loading state
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending Request...';
+        submitBtn.disabled = true;
+        
+        try {
+            // Make AJAX request
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.result) {
+                // Show success message
+                showAlert('Request sent successfully!', 'success');
+                
+                // Display results
+                displayResults(data.result);
+            } else {
+                // Show error message
+                showAlert(data.error || 'Request failed');
+            }
+            
+        } catch (error) {
+            console.error('Request failed:', error);
+            showAlert('Network error: Unable to send request');
+        } finally {
+            // Reset button
+            submitBtn.innerHTML = originalContent;
+            submitBtn.disabled = false;
+        }
+    });
+    
+    // Function to display results
+    function displayResults(result) {
+        const resultsContainer = document.getElementById('results-container');
+        const statusBadge = document.getElementById('status-badge');
+        
+        // Store response data for view switching
+        currentResponseData = result;
+        
+        // Show results container
+        resultsContainer.classList.remove('hidden');
+        
+        // Update status badge
+        statusBadge.className = 'px-4 py-2 rounded-full text-sm font-semibold';
+        if (result.success) {
+            statusBadge.classList.add('bg-green-500/20', 'text-green-400');
+            statusBadge.innerHTML = '<i class="fas fa-check-circle mr-1"></i>Success';
+        } else {
+            statusBadge.classList.add('bg-red-500/20', 'text-red-400');
+            statusBadge.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i>Error';
+        }
+        
+        // Update result fields
+        document.getElementById('result-target-url').textContent = result.target_url;
+        document.getElementById('result-post-data').textContent = JSON.stringify(result.post_data, null, 2);
+        document.getElementById('result-status-code').textContent = result.status_code;
+        document.getElementById('result-headers').textContent = JSON.stringify(result.headers, null, 2);
+        
+        // Handle raw response
+        if (result.raw_response) {
+            document.getElementById('response-section').classList.remove('hidden');
+            document.getElementById('result-response-raw').textContent = result.raw_response;
+            renderPreviewContent(result);
+        }
+        
+        // Scroll to results
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // Function to render preview content based on response type
+    function renderPreviewContent(result) {
+        const previewContainer = document.getElementById('result-response-preview');
+        
+        if (!result.raw_response) {
+            previewContainer.innerHTML = '<div class="text-slate-400">No response content</div>';
+            return;
+        }
+        
+        // Check if the response is HTML
+        if (isHtmlContent(result.raw_response, result.headers)) {
+            // Render HTML in iframe
+            const iframeHtml = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-green-400 font-medium">
+                            <i class="fas fa-globe mr-2"></i>
+                            HTML Response - Rendered Website Preview
+                        </div>
+                        <button onclick="toggleIframeFullscreen()" class="px-3 py-1 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg text-xs text-slate-300 transition-all duration-200">
+                            <i class="fas fa-expand mr-1"></i>
+                            Fullscreen
+                        </button>
+                    </div>
+                    <div class="relative bg-white rounded-lg overflow-hidden" style="height: 400px;">
+                        <iframe 
+                            id="html-preview-iframe"
+                            srcdoc="${escapeHtml(result.raw_response)}" 
+                            class="w-full h-full border-0"
+                            sandbox="allow-scripts allow-same-origin allow-forms"
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="text-xs text-slate-400 flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Website rendered in secure iframe sandbox
+                    </div>
+                </div>
+            `;
+            previewContainer.innerHTML = iframeHtml;
+        } else if (isJsonContent(result.raw_response)) {
+            // Parse and display JSON nicely
+            try {
+                const jsonData = JSON.parse(result.raw_response);
+                const previewContent = createJsonPreviewContent(jsonData);
+                previewContainer.innerHTML = previewContent;
+            } catch (e) {
+                // If JSON parsing fails, show as plain text
+                previewContainer.innerHTML = `<pre class="whitespace-pre-wrap text-slate-300">${escapeHtml(result.raw_response)}</pre>`;
+            }
+        } else {
+            // Handle plain text or other content
+            previewContainer.innerHTML = `<pre class="whitespace-pre-wrap text-slate-300">${escapeHtml(result.raw_response)}</pre>`;
+        }
+    }
+    
+    // Function to create preview content from JSON
+    function createJsonPreviewContent(jsonData) {
+        if (typeof jsonData !== 'object' || jsonData === null) {
+            return `<div class="text-slate-300">${escapeHtml(String(jsonData))}</div>`;
+        }
+        
+        let html = '<div class="space-y-3">';
+        
+        for (const [key, value] of Object.entries(jsonData)) {
+            html += '<div class="border-l-2 border-purple-400/30 pl-4">';
+            html += `<div class="text-purple-300 font-medium text-sm">${escapeHtml(key)}</div>`;
+            
+            if (typeof value === 'object' && value !== null) {
+                html += `<div class="text-slate-300 text-sm mt-1 ml-2 font-mono">${escapeHtml(JSON.stringify(value, null, 2))}</div>`;
+            } else {
+                html += `<div class="text-slate-300 text-sm mt-1">${escapeHtml(String(value))}</div>`;
+            }
+            
+            html += '</div>';
+        }
+        
+        html += '</div>';
+        return html;
+    }
+    
+    // Function to toggle iframe fullscreen
+    function toggleIframeFullscreen() {
+        const iframe = document.getElementById('html-preview-iframe');
+        if (!iframe) return;
+        
+        // Create fullscreen modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black/90 z-50 flex flex-col';
+        modal.innerHTML = `
+            <div class="flex items-center justify-between p-4 bg-slate-800/90 border-b border-slate-600/50">
+                <div class="text-white font-medium">
+                    <i class="fas fa-globe mr-2"></i>
+                    HTML Response Preview - Fullscreen
+                </div>
+                <button onclick="closeFullscreen()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 transition-all duration-200">
+                    <i class="fas fa-times mr-2"></i>
+                    Close
+                </button>
+            </div>
+            <div class="flex-1 bg-white">
+                <iframe 
+                    srcdoc="${iframe.getAttribute('srcdoc')}" 
+                    class="w-full h-full border-0"
+                    sandbox="allow-scripts allow-same-origin allow-forms">
+                </iframe>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Add close function to global scope temporarily
+        window.closeFullscreen = function() {
+            document.body.removeChild(modal);
+            delete window.closeFullscreen;
+        };
+        
+        // Close on escape key
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                window.closeFullscreen();
+                document.removeEventListener('keydown', handleEscape);
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+    }
+    
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Make toggleIframeFullscreen globally available
+    window.toggleIframeFullscreen = toggleIframeFullscreen;
 </script>
 {% endblock %}
