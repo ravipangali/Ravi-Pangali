@@ -1,0 +1,188 @@
+{% extends 'myuser/base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse opacity-60"></div>
+        <div class="absolute top-1/3 right-1/3 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-40"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-3 h-3 bg-blue-500 rounded-full animate-bounce opacity-30"></div>
+        <div class="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-pulse opacity-50"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 main-container px-4 sm:px-6 py-12">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl mb-6 shadow-2xl shadow-orange-500/25">
+                    <i class="fas fa-fire text-2xl text-white"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
+                    Firebase Apps
+                </h1>
+                <p class="text-lg text-slate-300 max-w-2xl mx-auto">
+                    Manage your Firebase apps and send push notifications
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <a href="{% url 'myuser:firebase_app_create' %}" 
+                   class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl text-center">
+                    <i class="fas fa-plus mr-2"></i>Create Firebase App
+                </a>
+                <a href="{% url 'myuser:dashboard' %}" 
+                   class="px-8 py-4 border border-slate-600 text-slate-300 rounded-xl font-medium hover:bg-slate-700 transition-colors text-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Apps Grid -->
+            {% if apps %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for app in apps %}
+                    <div class="glass-card p-6 rounded-2xl shadow-2xl border border-blue-500/30 hover:border-orange-500/50 transition-all duration-300">
+                        <!-- App Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-fire text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">{{ app.name }}</h3>
+                                    <p class="text-sm text-slate-400">{{ app.project_id }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                    {% if app.is_active %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    {% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
+                                    {{ app.is_active|yesno:"Active,Inactive" }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- App Stats -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-400">{{ app.devices.count }}</div>
+                                <div class="text-xs text-slate-400">Devices</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-400">{{ app.notifications.count }}</div>
+                                <div class="text-xs text-slate-400">Notifications</div>
+                            </div>
+                        </div>
+
+                        <!-- App Actions -->
+                        <div class="space-y-2">
+                            <a href="{% url 'myuser:send_notification' app.id %}" 
+                               class="block w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center">
+                                <i class="fas fa-paper-plane mr-1"></i>Send Notification
+                            </a>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="{% url 'myuser:fcm_devices' app.id %}" 
+                                   class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-xs font-medium transition-colors text-center">
+                                    <i class="fas fa-mobile-alt mr-1"></i>Devices
+                                </a>
+                                <a href="{% url 'myuser:test_firebase_connection' app.id %}" 
+                                   class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded text-xs font-medium transition-colors text-center">
+                                    <i class="fas fa-wifi mr-1"></i>Test
+                                </a>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="{% url 'myuser:firebase_app_edit' app.id %}" 
+                                   class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded text-xs font-medium transition-colors text-center">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </a>
+                                <a href="{% url 'myuser:firebase_app_delete' app.id %}" 
+                                   class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-xs font-medium transition-colors text-center">
+                                    <i class="fas fa-trash mr-1"></i>Delete
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- App Info -->
+                        <div class="mt-4 pt-4 border-t border-slate-700/50">
+                            <div class="text-xs text-slate-400 space-y-1">
+                                <div><strong>Created:</strong> {{ app.created_at|date:"M d, Y" }}</div>
+                                {% if app.project_name %}
+                                <div><strong>Project:</strong> {{ app.project_name }}</div>
+                                {% endif %}
+                                <div><strong>Status:</strong> {{ app.is_active|yesno:"Active,Inactive" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-16">
+                    <div class="mx-auto w-24 h-24 bg-slate-800/50 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-fire text-3xl text-slate-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">No Firebase Apps Yet</h3>
+                    <p class="text-slate-400 mb-8 max-w-md mx-auto">
+                        Create your first Firebase app to start sending push notifications
+                    </p>
+                    <a href="{% url 'myuser:firebase_app_create' %}" 
+                       class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl">
+                        <i class="fas fa-plus mr-2"></i>Create Your First Firebase App
+                    </a>
+                </div>
+            {% endif %}
+
+            <!-- Help Section -->
+            <div class="mt-12 glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-question-circle mr-2 text-blue-400"></i>Getting Started with Firebase
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-orange-400 mb-2">1. Create Firebase Project</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Go to <a href="https://console.firebase.google.com" target="_blank" class="text-blue-400 hover:text-blue-300">Firebase Console</a></li>
+                            <li>• Create a new project or select existing</li>
+                            <li>• Enable Cloud Messaging (FCM)</li>
+                            <li>• Download service account JSON file</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-green-400 mb-2">2. Add Your App</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Click "Create Firebase App" above</li>
+                            <li>• Enter your project ID and name</li>
+                            <li>• Upload the service account JSON file</li>
+                            <li>• Test the connection</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(15, 23, 42, 0.25);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3), 
+            inset 0 0 0 1px rgba(59, 130, 246, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.4), 
+            inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+    }
+</style>
+{% endblock %} 

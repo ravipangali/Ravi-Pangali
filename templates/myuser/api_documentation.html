@@ -1,0 +1,610 @@
+{% extends 'myuser/base/base.html' %}
+
+{% block title %}API Documentation - Ravi Pangali{% endblock %}
+
+{% block meta_tags %}
+<meta name="description" content="Complete API documentation for Firebase notification endpoints with email/password authentication." />
+<meta property="og:title" content="API Documentation - Ravi Pangali" />
+<meta property="og:description" content="Complete API documentation for Firebase notification endpoints with email/password authentication." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta name="twitter:title" content="API Documentation - Ravi Pangali" />
+<meta name="twitter:description" content="Complete API documentation for Firebase notification endpoints with email/password authentication." />
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse opacity-60"></div>
+        <div class="absolute top-1/3 right-1/3 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-40"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-3 h-3 bg-blue-500 rounded-full animate-bounce opacity-30"></div>
+        <div class="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-pulse opacity-50"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 main-container px-4 sm:px-6 py-12">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl mb-6 shadow-2xl shadow-blue-500/25">
+                    <i class="fas fa-code text-2xl text-white"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
+                    API Documentation
+                </h1>
+                <p class="text-lg text-slate-300 max-w-2xl mx-auto">
+                    Complete documentation for Firebase notification API endpoints with email/password authentication
+                </p>
+            </div>
+
+            <!-- Authentication Section -->
+            <div class="glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30 mb-8">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-shield-alt mr-3 text-blue-400"></i>Authentication
+                </h2>
+                <div class="text-slate-300 space-y-4">
+                    <p>All API endpoints require email and password authentication. Include your credentials in each request.</p>
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <h4 class="text-sm font-medium text-slate-400 mb-2">Base URL:</h4>
+                        <code class="text-blue-400 font-mono">https://yourdomain.com/user/api/</code>
+                    </div>
+                    <div class="bg-yellow-900/20 rounded-lg p-4 border border-yellow-500/30">
+                        <h4 class="text-sm font-medium text-yellow-400 mb-2">⚠️ Important:</h4>
+                        <p class="text-sm text-yellow-200">This API uses email/password authentication instead of session cookies. Include credentials in every request.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Endpoints -->
+            <div class="space-y-8">
+                <!-- 1. Send Notification to Specific App -->
+                <div class="glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white">Send Notification</h3>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-900 text-green-200">
+                            POST
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-400 mb-2">Endpoint</h4>
+                            <code class="bg-slate-800/50 px-3 py-2 rounded-lg text-blue-400 font-mono text-sm border border-slate-700/50">
+                                /user/api/firebase/apps/{app_id}/notifications/
+                            </code>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-green-400 mb-2">Request Body</h4>
+                            <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "email": "user@example.com",
+  "password": "userpassword",
+  "title": "Notification Title",
+  "body": "Notification message content",
+  "tokens": ["fcm_token_1", "fcm_token_2"],
+  "image_url": "https://example.com/image.jpg",
+  "data": {
+    "custom_key": "custom_value",
+    "action": "open_screen"
+  },
+  "priority": "high"
+}</pre>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-purple-400 mb-2">Parameters</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <span class="text-red-400 font-mono text-sm">email*</span>
+                                        <span class="text-slate-400 text-sm ml-2">User email address</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-red-400 font-mono text-sm">password*</span>
+                                        <span class="text-slate-400 text-sm ml-2">User password</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-red-400 font-mono text-sm">title*</span>
+                                        <span class="text-slate-400 text-sm ml-2">Notification title</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-red-400 font-mono text-sm">body*</span>
+                                        <span class="text-slate-400 text-sm ml-2">Notification message</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">tokens</span>
+                                        <span class="text-slate-400 text-sm ml-2">Array of FCM tokens (optional)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">image_url</span>
+                                        <span class="text-slate-400 text-sm ml-2">Image URL (optional)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">data</span>
+                                        <span class="text-slate-400 text-sm ml-2">Custom data object (optional)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">priority</span>
+                                        <span class="text-slate-400 text-sm ml-2">"high" or "normal" (default: "high")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-yellow-400 mb-2">Response</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-sm font-medium text-green-400 mb-2">Success Response (200)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": true,
+  "message": "Notification sent successfully",
+  "notification_id": "uuid-string",
+  "tokens_sent": 5,
+  "tokens_delivered": 4,
+  "tokens_failed": 1,
+  "details": [
+    {
+      "token": "fcm_token_1",
+      "success": true,
+      "response": {...}
+    }
+  ]
+}</pre>
+                                </div>
+                                <div>
+                                    <h5 class="text-sm font-medium text-red-400 mb-2">Error Response (400/401/404)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": false,
+  "error": "Invalid email or password"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Quick Notification -->
+                <div class="glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white">Quick Notification</h3>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-900 text-green-200">
+                            POST
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-400 mb-2">Endpoint</h4>
+                            <code class="bg-slate-800/50 px-3 py-2 rounded-lg text-blue-400 font-mono text-sm border border-slate-700/50">
+                                /user/api/firebase/quick-notification/
+                            </code>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-green-400 mb-2">Request Body</h4>
+                            <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "email": "user@example.com",
+  "password": "userpassword",
+  "title": "Quick Notification",
+  "body": "This is a quick notification message"
+}</pre>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-purple-400 mb-2">Parameters</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">email*</span>
+                                    <span class="text-slate-400 text-sm ml-2">User email address</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">password*</span>
+                                    <span class="text-slate-400 text-sm ml-2">User password</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-yellow-400 mb-2">Response</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-sm font-medium text-green-400 mb-2">Success Response (200)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": true,
+  "message": "Notification sent! Delivered: 4, Failed: 1"
+}</pre>
+                                </div>
+                                <div>
+                                    <h5 class="text-sm font-medium text-red-400 mb-2">Error Response (400/401)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": false,
+  "error": "No active Firebase app found"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Add Device -->
+                <div class="glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white">Add Device</h3>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-900 text-green-200">
+                            POST
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-400 mb-2">Endpoint</h4>
+                            <code class="bg-slate-800/50 px-3 py-2 rounded-lg text-blue-400 font-mono text-sm border border-slate-700/50">
+                                /user/api/firebase/apps/{app_id}/devices/
+                            </code>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-green-400 mb-2">Request Body</h4>
+                            <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "email": "user@example.com",
+  "password": "userpassword",
+  "token": "fcm_device_token_here",
+  "device_id": "device_identifier",
+  "device_type": "android"
+}</pre>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-purple-400 mb-2">Parameters</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">email*</span>
+                                    <span class="text-slate-400 text-sm ml-2">User email address</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">password*</span>
+                                    <span class="text-slate-400 text-sm ml-2">User password</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">token*</span>
+                                    <span class="text-slate-400 text-sm ml-2">FCM device token</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-blue-400 font-mono text-sm">device_id</span>
+                                    <span class="text-slate-400 text-sm ml-2">Device identifier (optional)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-blue-400 font-mono text-sm">device_type</span>
+                                    <span class="text-slate-400 text-sm ml-2">"android", "ios", "web", "unknown" (default: "unknown")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-yellow-400 mb-2">Response</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-sm font-medium text-green-400 mb-2">Success Response (200)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": true,
+  "message": "Device registered successfully",
+  "device_id": "uuid-string",
+  "created": true,
+  "device_type": "android"
+}</pre>
+                                </div>
+                                <div>
+                                    <h5 class="text-sm font-medium text-red-400 mb-2">Error Response (400/401/404)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": false,
+  "error": "Token is required"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Get Devices -->
+                <div class="glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white">Get Devices</h3>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-200">
+                            GET
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-400 mb-2">Endpoint</h4>
+                            <code class="bg-slate-800/50 px-3 py-2 rounded-lg text-blue-400 font-mono text-sm border border-slate-700/50">
+                                /user/api/firebase/apps/{app_id}/devices/list/?email=user@example.com&password=userpassword
+                            </code>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-green-400 mb-2">Alternative: Headers</h4>
+                            <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+mail: user@example.com
+X-Password: userpassword</pre>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-purple-400 mb-2">Parameters</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">email*</span>
+                                    <span class="text-slate-400 text-sm ml-2">User email address (query param or header)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-red-400 font-mono text-sm">password*</span>
+                                    <span class="text-slate-400 text-sm ml-2">User password (query param or header)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-semibold text-yellow-400 mb-2">Response</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-sm font-medium text-green-400 mb-2">Success Response (200)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": true,
+  "devices": [
+    {
+      "id": "device-uuid",
+      "app_name": "My Firebase App",
+      "device_type": "android",
+      "device_id": "device_identifier",
+      "token_preview": "fcm_token_here...",
+      "last_used": "2024-01-15 10:30:00",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total_devices": 5
+}</pre>
+                                </div>
+                                <div>
+                                    <h5 class="text-sm font-medium text-red-400 mb-2">Error Response (401/404)</h5>
+                                    <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+{
+  "success": false,
+  "error": "Invalid email or password"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Examples -->
+            <div class="mt-12 glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-code mr-3 text-blue-400"></i>Usage Examples
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- JavaScript Example -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-400 mb-4">JavaScript (Fetch)</h3>
+                        <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+// Send notification with email/password auth
+const sendNotification = async () => {
+  const response = await fetch('/user/api/firebase/apps/your-app-id/notifications/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: 'user@example.com',
+      password: 'userpassword',
+      title: 'Hello from API!',
+      body: 'This is a test notification',
+      tokens: ['fcm_token_1', 'fcm_token_2'],
+      data: {
+        action: 'open_screen',
+        screen_id: 'home'
+      }
+    })
+  });
+  
+  const result = await response.json();
+  console.log(result);
+};
+
+// Add device
+const addDevice = async () => {
+  const response = await fetch('/user/api/firebase/apps/your-app-id/devices/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: 'user@example.com',
+      password: 'userpassword',
+      token: 'fcm_device_token',
+      device_id: 'device_123',
+      device_type: 'android'
+    })
+  });
+  
+  const result = await response.json();
+  console.log(result);
+};</pre>
+                    </div>
+
+                    <!-- cURL Example -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-400 mb-4">cURL</h3>
+                        <pre class="bg-slate-800/50 p-4 rounded-lg text-sm overflow-x-auto border border-slate-700/50 text-slate-300">
+# Send notification
+curl -X POST \
+  https://yourdomain.com/user/api/firebase/apps/your-app-id/notifications/ \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email": "user@example.com",
+    "password": "userpassword",
+    "title": "Test Notification",
+    "body": "This is a test notification",
+    "priority": "high"
+  }'
+
+# Add device
+curl -X POST \
+  https://yourdomain.com/user/api/firebase/apps/your-app-id/devices/ \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email": "user@example.com",
+    "password": "userpassword",
+    "token": "fcm_device_token",
+    "device_id": "device_123",
+    "device_type": "android"
+  }'
+
+# List devices (query params)
+curl -X GET \
+  "https://yourdomain.com/user/api/firebase/apps/your-app-id/devices/list/?email=user@example.com&password=userpassword"
+
+# List devices (headers)
+curl -X GET \
+  https://yourdomain.com/user/api/firebase/apps/your-app-id/devices/list/ \
+  -H 'X-Email: user@example.com' \
+  -H 'X-Password: userpassword'</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Codes -->
+            <div class="mt-8 glass-card p-8 rounded-2xl shadow-2xl border border-blue-500/30">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-3 text-yellow-400"></i>Error Codes
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-red-400 mb-4">HTTP Status Codes</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <span class="w-16 text-red-400 font-mono">400</span>
+                                <span class="text-slate-300">Request - Missing email/password or required fields</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-16 text-red-400 font-mono">401</span>
+                                <span class="text-slate-300">Unauthorized - Invalid email/password</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-16 text-red-400 font-mono">404</span>
+                                <span class="text-slate-300">Not Found - Firebase app not found</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-16 text-green-400 font-mono">200</span>
+                                <span class="text-slate-300">Success - Request completed successfully</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-yellow-400 mb-4">Common Error Messages</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="text-slate-300">
+                                <span class="text-red-400 font-mono">"Email and password are required"</span>
+                                <span class="text-slate-400">- Missing authentication credentials</span>
+                            </div>
+                            <div class="text-slate-300">
+                                <span class="text-red-400 font-mono">"Invalid email or password"</span>
+                                <span class="text-slate-400">- Authentication failed</span>
+                            </div>
+                            <div class="text-slate-300">
+                                <span class="text-red-400 font-mono">"Title and body are required"</span>
+                                <span class="text-slate-400">- Missing required notification fields</span>
+                            </div>
+                            <div class="text-slate-300">
+                                <span class="text-red-400 font-mono">"Firebase app not found"</span>
+                                <span class="text-slate-400">- Invalid app ID or app doesn't belong to user</span>
+                            </div>
+                            <div class="text-slate-300">
+                                <span class="text-red-400 font-mono">"Account is disabled"</span>
+                                <span class="text-slate-400">- User account is inactive</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Notes -->
+            <div class="mt-8 glass-card p-8 rounded-2xl shadow-2xl border border-yellow-500/30">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-lock mr-3 text-yellow-400"></i>Security Notes
+                </h2>
+                
+                <div class="text-slate-300 space-y-4">
+                    <div class="bg-yellow-900/20 rounded-lg p-4 border border-yellow-500/30">
+                        <h4 class="text-sm font-medium text-yellow-400 mb-2">⚠️ Important Security Considerations:</h4>
+                        <ul class="text-sm text-yellow-200 space-y-2">
+                            <li>• Always use HTTPS in production to encrypt credentials</li>
+                            <li>• Consider using API keys or tokens for production applications</li>
+                            <li>• Implement rate limiting to prevent brute force attacks</li>
+                            <li>• Store credentials securely in your application</li>
+                            <li>• Consider implementing OAuth2 for better security</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-500/30">
+                        <h4 class="text-sm font-medium text-blue-400 mb-2">🔒 Best Practices:</h4>
+                        <ul class="text-sm text-blue-200 space-y-2">
+                            <li>• Use environment variables for credentials</li>
+                            <li>• Implement proper error handling</li>
+                            <li>• Log authentication attempts for security monitoring</li>
+                            <li>• Consider implementing JWT tokens for stateless authentication</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(15, 23, 42, 0.25);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3), 
+            inset 0 0 0 1px rgba(59, 130, 246, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.4), 
+            inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+    }
+
+    pre {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        line-height: 1.4;
+    }
+
+    code {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+</style>
+{% endblock %} 

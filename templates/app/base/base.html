@@ -73,15 +73,15 @@
     {% endblock %}
   </head>
   <body class="loading">
-    {% include 'base/loader.html' %}
+    {% include 'app/base/loader.html' %}
 
-    <div class="content-wrapper">
-      {% include 'base/header.html' %}
+    <div class="content-wrapper" style="padding-top: 4rem !important;">
+      {% include 'app/base/header.html' %}
       <main class="main-container" style="padding-top: 2rem !important;">
         {% block content %}
         {% endblock %}
       </main>
-      {% include 'base/footer.html' %}
+      {% include 'app/base/footer.html' %}
     </div>
 
     <!-- Floating Theme Switcher -->

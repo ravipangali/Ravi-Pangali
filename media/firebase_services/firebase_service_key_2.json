@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "luna-iot-5993f",
+  "private_key_id": "890ecc4e2168b61be3812df1b1c11e9e8df7e771",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDLW+TyyAUipKat\nwnyEG4uLzSQbdn1GwZppY99g3u2Q7F651T0X+CzZGFg5lHjjSxWU6rQBd+kihmRC\nfjQ7BMTVpo4GqcoynFErrl4n4+u9WjYhr58gmaCxk5MqGmcy1OVF30uLlSpZ+CVu\nR7N2zoFdnKWvyT12W0ZRLCCNgNsXCRI2+BK0cb657VF/E+zIjwGvIVk3MSDJf0Qg\n0xkGGrLnEieHjWxyDwdv2DJCIRvLjjF2XA3zJpve0a6K7JLXxjH7KdkUDRLL78to\n1M6hP5XvZi8i2bYzvr9p7CwOVjyE03vTSquxNRTY0YU1vGGsGA+FWzCwMn8VuV8Q\ndSGgZ0RpAgMBAAECggEAIZKQuCIccu0y1UHj851mitR5rwz/PqSsvNRvptr25nOX\nad+R3/ipUsfpnMvtrzyQmg6rXAizVO9R8wZJ0iqF4m3GScRTLMrQvcDiK3y9yPtx\nL1uCjku+k0J1S8CjI+mw1jm4i5k7LjJA37V3o9gQ1GcNlXlIK9eCwtjhoOrSgLlD\nzKhpMfrGbo7z7iuquxbSa13DhuYR7+M1fLW+vagWRWdTygzBp1cUuFDhNP2gLePy\nfNzL5q/zcOiJ/Tv5OJPQM6uIlQPEdsOhqwaHE/rfj1Oru6opBJIMRkB69tjSE1pL\ngXUJFwR2FDxV6Wc9Nryc4TL+29aJUYAUn/Ch1FmyGQKBgQDpeYUMZ2/rRlyJgb35\nkIJp+uhZAhlH6f2uG7+z6WRbl3ykj8Stp6O002SM6PFrFN9QQ11MrP3WlA6gWzze\nLc273a5zbLzF5H3Z8TLkq06K6Qi3UHG9Be+e5nuGyE3//JWnKbJU2gUR5+UO0Smj\n0wtw2eLKnetakreTMJqJr0iMJQKBgQDe+o+HGhnqOqPUHOi1q7Dk7dIsNoW4h44L\n5phMxG/tfMMpMHB2GhSIZR5Au63YvFvYJ0OvXPLC7eSe9hu1E6nRSATWd85UxUbA\ncCOe95BBwoMEQPPpc2T8zUqwMntBG0MZP+yVQcp31WJipGIgmPe2awVPcZArJdUc\nEqXe16kB9QKBgH1tk1S+nRnAiyY0VWMlh2p4KSroPbyssGRA9BQrZobuM0AVHIxO\na1xR1Mr+ufPVGsN77TusFBKbJ+BuI50Y7lXnGjlYSXHm9tWHBthiT6fA2bXhubja\n34h2OhaGtaC4iY1skSmUlvSvqBb1t3ETiCnwZC6F+FKIT6b7jYo6aLchAoGBAL2C\njwHwOR5OAHeCqnXdGlc3mW1iWXxgGWYb8k0sl0RsySH0vWBjAhh6eJ/j4vlV/WlU\n1b3xbZImxiwkV6AquiXY4+Ozp3V8xYlAxcWR+tUpEFlJKwS6wpXplRTzkrXfCcQo\nBFdGt2Hpxdi4hX3XBJHRm43Now5I9TsKzlb7S/URAoGBAKy1s486amtMrRYiLkT/\n+uYlBxSQWs5sccqOsGgVQjr/f8GaFEaGotp1bPozT3Y/kPyOVkxwgScQjk683Nfd\neTu7Erwl8Dn4lSAfYaTi9uocmYJhO/oyYm3+e+Nf58++IQBJkWmHcI1WAUB/gwi8\nh+h/uC2yeMzoEo8u5AidPycF\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@luna-iot-5993f.iam.gserviceaccount.com",
+  "client_id": "108105592493412976295",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40luna-iot-5993f.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

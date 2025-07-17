@@ -16,7 +16,13 @@
                 <a href="{% url 'home' %}#projects" class="nav-link relative text-sm lg:text-base">Projects</a>
                 <a href="{% url 'home' %}#skills" class="nav-link relative text-sm lg:text-base">Skills</a>
                 <a href="{% url 'home' %}#timeline" class="nav-link relative text-sm lg:text-base">Experience</a>
-                <a href="{% url 'home' %}#contact" class="contact-btn px-3 py-1.5 lg:px-5 lg:py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg text-white text-sm lg:text-base font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">Contact</a>
+                <a href="{% url 'home' %}#contact" class="nav-link relative text-sm lg:text-base">Contact</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'myuser:dashboard' %}" class="contact-btn px-3 py-1.5 lg:px-5 lg:py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg text-white text-sm lg:text-base font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">Dashboard</a>
+                    <a href="{% url 'myuser:logout' %}" class="contact-btn px-3 py-1.5 lg:px-5 lg:py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg text-white text-sm lg:text-base font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">Logout</a>
+                {% else %}
+                    <a href="{% url 'myuser:login' %}" class="contact-btn px-3 py-1.5 lg:px-5 lg:py-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg text-white text-sm lg:text-base font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25">Login</a>
+                {% endif %}
             </div>
             
             <!-- Mobile Menu Button -->

@@ -79,7 +79,7 @@ def home(request):
         'canonical_url': request.build_absolute_uri(),
     }
     
-    return render(request, 'home.html', context)
+    return render(request, 'app/home.html', context)
 
 def project_detail(request, project_id):
     """Display details for a specific project"""
@@ -108,7 +108,7 @@ def project_detail(request, project_id):
         'meta_keywords': meta_keywords,
     }
     
-    return render(request, 'project_detail.html', context)
+    return render(request, 'app/project_detail.html', context)
 
 def attack_my_sites(request):
     """Handle site attacking functionality with AJAX support"""
