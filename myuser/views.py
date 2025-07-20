@@ -419,6 +419,12 @@ def send_notification_view(request, app_id):
             image_url = form.cleaned_data.get('image_url')
             data = form.cleaned_data.get('data', {})
             priority = form.cleaned_data['priority']
+            notification_type = form.cleaned_data.get('notification_type', '')
+            sound = form.cleaned_data.get('sound', '')
+            data_only = form.cleaned_data.get('data_only', False)
+            is_alarm = form.cleaned_data.get('is_alarm', False)
+            urgent = form.cleaned_data.get('urgent', False)
+            persistent = form.cleaned_data.get('persistent', False)
             
             # Handle data field (convert string to dict if needed)
             if isinstance(data, str) and data:
@@ -444,7 +450,13 @@ def send_notification_view(request, app_id):
                     body=body,
                     image_url=image_url,
                     data=data,
-                    priority=priority
+                    priority=priority,
+                    notification_type=notification_type,
+                    sound=sound,
+                    data_only=data_only,
+                    is_alarm=is_alarm,
+                    urgent=urgent,
+                    persistent=persistent
                 )
             else:
                 # Send to specific tokens
@@ -460,7 +472,13 @@ def send_notification_view(request, app_id):
                     tokens=tokens,
                     image_url=image_url,
                     data=data,
-                    priority=priority
+                    priority=priority,
+                    notification_type=notification_type,
+                    sound=sound,
+                    data_only=data_only,
+                    is_alarm=is_alarm,
+                    urgent=urgent,
+                    persistent=persistent
                 )
             
             # Debug: Print result
@@ -613,6 +631,14 @@ def ajax_send_notification(request, app_id):
         custom_data = data.get('data', {})
         priority = data.get('priority', 'high')
         
+        # Parse additional notification parameters
+        notification_type = data.get('type', '')
+        sound = data.get('sound', '')
+        data_only = data.get('data_only', False)
+        is_alarm = data.get('is_alarm', False)
+        urgent = data.get('urgent', False)
+        persistent = data.get('persistent', False)
+        
         if not title or not body:
             return JsonResponse({'success': False, 'error': 'Title and body are required'})
         
@@ -629,7 +655,13 @@ def ajax_send_notification(request, app_id):
                 tokens=tokens,
                 image_url=image_url,
                 data=custom_data,
-                priority=priority
+                priority=priority,
+                notification_type=notification_type,
+                sound=sound,
+                data_only=data_only,
+                is_alarm=is_alarm,
+                urgent=urgent,
+                persistent=persistent
             )
         else:
             result = service.send_to_all_devices(
@@ -637,7 +669,13 @@ def ajax_send_notification(request, app_id):
                 body=body,
                 image_url=image_url,
                 data=custom_data,
-                priority=priority
+                priority=priority,
+                notification_type=notification_type,
+                sound=sound,
+                data_only=data_only,
+                is_alarm=is_alarm,
+                urgent=urgent,
+                persistent=persistent
             )
         
         return JsonResponse(result)
@@ -704,8 +742,25 @@ def ajax_quick_notification(request):
         if not service:
             return JsonResponse({'success': False, 'error': 'Firebase service not available'})
         
+        # Parse additional notification parameters
+        notification_type = data.get('type', '')
+        sound = data.get('sound', '')
+        data_only = data.get('data_only', False)
+        is_alarm = data.get('is_alarm', False)
+        urgent = data.get('urgent', False)
+        persistent = data.get('persistent', False)
+        
         # Send to all devices
-        result = service.send_to_all_devices(title=title, body=body)
+        result = service.send_to_all_devices(
+            title=title, 
+            body=body,
+            notification_type=notification_type,
+            sound=sound,
+            data_only=data_only,
+            is_alarm=is_alarm,
+            urgent=urgent,
+            persistent=persistent
+        )
         
         if result['success']:
             return JsonResponse({
@@ -782,6 +837,14 @@ def firebase_notification_api(request, app_id):
         custom_data = request.data.get('data', {})
         priority = request.data.get('priority', 'high')
         
+        # Parse additional notification parameters
+        notification_type = request.data.get('type', '')
+        sound = request.data.get('sound', '')
+        data_only = request.data.get('data_only', False)
+        is_alarm = request.data.get('is_alarm', False)
+        urgent = request.data.get('urgent', False)
+        persistent = request.data.get('persistent', False)
+        
         # Validate required fields
         if not title or not body:
             return Response({
@@ -790,10 +853,10 @@ def firebase_notification_api(request, app_id):
             }, status=status.HTTP_400_BAD_REQUEST)
         
         # Validate priority
-        if priority not in ['normal', 'high']:
+        if priority not in ['normal', 'high', 'urgent']:
             return Response({
                 'success': False,
-                'error': 'Priority must be normal or high'
+                'error': 'Priority must be normal, high, or urgent'
             }, status=status.HTTP_400_BAD_REQUEST)
         
         # Get Firebase service
@@ -812,7 +875,13 @@ def firebase_notification_api(request, app_id):
                 tokens=tokens,
                 image_url=image_url,
                 data=custom_data,
-                priority=priority
+                priority=priority,
+                notification_type=notification_type,
+                sound=sound,
+                data_only=data_only,
+                is_alarm=is_alarm,
+                urgent=urgent,
+                persistent=persistent
             )
         else:
             result = service.send_to_all_devices(
@@ -820,7 +889,13 @@ def firebase_notification_api(request, app_id):
                 body=body,
                 image_url=image_url,
                 data=custom_data,
-                priority=priority
+                priority=priority,
+                notification_type=notification_type,
+                sound=sound,
+                data_only=data_only,
+                is_alarm=is_alarm,
+                urgent=urgent,
+                persistent=persistent
             )
         
         # Return appropriate response

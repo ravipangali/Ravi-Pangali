@@ -476,7 +476,7 @@ class PushNotificationForm(forms.ModelForm):
     
     class Meta:
         model = PushNotification
-        fields = ['title', 'body', 'image_url', 'data', 'priority']
+        fields = ['title', 'body', 'image_url', 'data', 'priority', 'notification_type', 'sound', 'data_only', 'is_alarm', 'urgent', 'persistent']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-input',
@@ -498,6 +498,26 @@ class PushNotificationForm(forms.ModelForm):
             }),
             'priority': forms.Select(attrs={
                 'class': 'form-select'
+            }),
+            'notification_type': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Enter notification type (e.g., alarm, alert)'
+            }),
+            'sound': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Enter sound name (e.g., alarm, default)'
+            }),
+            'data_only': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox'
+            }),
+            'is_alarm': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox'
+            }),
+            'urgent': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox'
+            }),
+            'persistent': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox'
             })
         }
     

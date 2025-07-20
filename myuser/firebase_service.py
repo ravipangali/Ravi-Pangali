@@ -88,7 +88,8 @@ class FirebaseService:
         except Exception as e:
             return False, f"Connection error: {str(e)}"
     
-    def send_notification(self, title, body, tokens=None, image_url=None, data=None, priority='high'):
+    def send_notification(self, title, body, tokens=None, image_url=None, data=None, priority='high', 
+                         notification_type='', sound='', data_only=False, is_alarm=False, urgent=False, persistent=False):
         """
         Send push notification using FCM API
         
@@ -98,7 +99,13 @@ class FirebaseService:
             tokens: List of FCM tokens (if None, sends to all devices)
             image_url: Optional image URL
             data: Optional custom data
-            priority: 'normal' or 'high'
+            priority: 'normal', 'high', or 'urgent'
+            notification_type: Type of notification (e.g., 'alarm', 'alert')
+            sound: Sound to play (e.g., 'alarm', 'default')
+            data_only: Send only data payload (no notification)
+            is_alarm: Flag for alarm notifications
+            urgent: Flag for urgent notifications
+            persistent: Flag for persistent notifications
         
         Returns:
             dict: Result with success status and details
@@ -138,6 +145,18 @@ class FirebaseService:
             message_data = data or {}
             message_data["timestamp"] = str(int(time.time()))
             
+            # Add notification type and sound to data if provided
+            if notification_type:
+                message_data["notification_type"] = notification_type
+            if sound:
+                message_data["sound"] = sound
+            if is_alarm:
+                message_data["is_alarm"] = "true"
+            if urgent:
+                message_data["urgent"] = "true"
+            if persistent:
+                message_data["persistent"] = "true"
+            
             # Send to each token
             results = []
             successful = 0
@@ -149,18 +168,39 @@ class FirebaseService:
                     message = {
                         "message": {
                             "token": token,
-                            "notification": notification_data,
                             "data": message_data,
                             "android": {
                                 "priority": priority
                             },
                             "apns": {
                                 "headers": {
-                                    "apns-priority": "10" if priority == 'high' else "5"
+                                    "apns-priority": "10" if priority == 'high' or priority == 'urgent' else "5"
                                 }
                             }
                         }
                     }
+                    
+                    # Add notification payload only if not data_only
+                    if not data_only:
+                        message["message"]["notification"] = notification_data
+                    
+                    # Add sound configuration for Android
+                    if sound:
+                        if "android" not in message["message"]:
+                            message["message"]["android"] = {}
+                        message["message"]["android"]["notification"] = {
+                            "sound": sound
+                        }
+                    
+                    # Add sound configuration for iOS
+                    if sound:
+                        if "apns" not in message["message"]:
+                            message["message"]["apns"] = {"headers": {}}
+                        message["message"]["apns"]["payload"] = {
+                            "aps": {
+                                "sound": sound
+                            }
+                        }
                     
                     # Send FCM API request
                     headers = {
@@ -202,6 +242,12 @@ class FirebaseService:
                 image_url=image_url,
                 data=data or {},
                 priority=priority,
+                notification_type=notification_type,
+                sound=sound,
+                data_only=data_only,
+                is_alarm=is_alarm,
+                urgent=urgent,
+                persistent=persistent,
                 tokens_sent=len(tokens),
                 tokens_delivered=successful,
                 tokens_failed=failed
@@ -222,7 +268,8 @@ class FirebaseService:
                 'error': str(e)
             }
     
-    def send_to_specific_tokens(self, title, body, tokens, image_url=None, data=None, priority='high'):
+    def send_to_specific_tokens(self, title, body, tokens, image_url=None, data=None, priority='high',
+                               notification_type='', sound='', data_only=False, is_alarm=False, urgent=False, persistent=False):
         """Send notification to specific tokens using FCM API"""
         return self.send_notification(
             title=title,
@@ -230,10 +277,17 @@ class FirebaseService:
             tokens=tokens,
             image_url=image_url,
             data=data,
-            priority=priority
+            priority=priority,
+            notification_type=notification_type,
+            sound=sound,
+            data_only=data_only,
+            is_alarm=is_alarm,
+            urgent=urgent,
+            persistent=persistent
         )
     
-    def send_to_all_devices(self, title, body, image_url=None, data=None, priority='high'):
+    def send_to_all_devices(self, title, body, image_url=None, data=None, priority='high',
+                           notification_type='', sound='', data_only=False, is_alarm=False, urgent=False, persistent=False):
         """Send notification to all devices for this app using FCM API"""
         return self.send_notification(
             title=title,
@@ -241,7 +295,13 @@ class FirebaseService:
             tokens=None,  # This will get all devices
             image_url=image_url,
             data=data,
-            priority=priority
+            priority=priority,
+            notification_type=notification_type,
+            sound=sound,
+            data_only=data_only,
+            is_alarm=is_alarm,
+            urgent=urgent,
+            persistent=persistent
         )
 
 def get_firebase_service(firebase_app_id):

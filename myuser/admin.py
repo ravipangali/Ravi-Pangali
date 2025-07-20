@@ -186,11 +186,32 @@ class FcmDeviceAdmin(admin.ModelAdmin):
 
 @admin.register(PushNotification)
 class PushNotificationAdmin(admin.ModelAdmin):
-    list_display = ['title', 'firebase_app', 'priority', 'tokens_sent', 'tokens_delivered', 'tokens_failed', 'sent_at']
-    list_filter = ['priority', 'sent_at']
-    search_fields = ['title', 'firebase_app__name', 'body']
+    list_display = ['title', 'firebase_app', 'priority', 'notification_type', 'sound', 'tokens_sent', 'tokens_delivered', 'tokens_failed', 'sent_at']
+    list_filter = ['priority', 'notification_type', 'is_alarm', 'urgent', 'data_only', 'sent_at']
+    search_fields = ['title', 'firebase_app__name', 'body', 'notification_type', 'sound']
     readonly_fields = ['sent_at']
     ordering = ['-sent_at']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('firebase_app', 'title', 'body', 'image_url')
+        }),
+        ('Notification Settings', {
+            'fields': ('priority', 'notification_type', 'sound', 'data_only')
+        }),
+        ('Special Flags', {
+            'fields': ('is_alarm', 'urgent', 'persistent'),
+            'classes': ('collapse',)
+        }),
+        ('Custom Data', {
+            'fields': ('data',),
+            'classes': ('collapse',)
+        }),
+        ('Delivery Statistics', {
+            'fields': ('tokens_sent', 'tokens_delivered', 'tokens_failed', 'sent_at'),
+            'classes': ('collapse',)
+        }),
+    )
 
 # Custom admin site configuration
 admin.site.site_header = "Ravi Pangali Admin"

@@ -89,7 +89,13 @@
     "custom_key": "custom_value",
     "action": "open_screen"
   },
-  "priority": "high"
+  "priority": "high",
+  "type": "alarm",
+  "sound": "alarm",
+  "data_only": false,
+  "is_alarm": true,
+  "urgent": true,
+  "persistent": true
 }</pre>
                         </div>
 
@@ -129,7 +135,31 @@
                                     </div>
                                     <div class="flex items-center">
                                         <span class="text-blue-400 font-mono text-sm">priority</span>
-                                        <span class="text-slate-400 text-sm ml-2">"high" or "normal" (default: "high")</span>
+                                        <span class="text-slate-400 text-sm ml-2">"normal", "high", or "urgent" (default: "high")</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">type</span>
+                                        <span class="text-slate-400 text-sm ml-2">Notification type (e.g., "alarm", "alert")</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">sound</span>
+                                        <span class="text-slate-400 text-sm ml-2">Sound to play (e.g., "alarm", "default")</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">data_only</span>
+                                        <span class="text-slate-400 text-sm ml-2">Send only data payload (no notification)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">is_alarm</span>
+                                        <span class="text-slate-400 text-sm ml-2">Flag for alarm notifications</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">urgent</span>
+                                        <span class="text-slate-400 text-sm ml-2">Flag for urgent notifications</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-blue-400 font-mono text-sm">persistent</span>
+                                        <span class="text-slate-400 text-sm ml-2">Flag for persistent notifications</span>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +449,14 @@ const sendNotification = async () => {
       data: {
         action: 'open_screen',
         screen_id: 'home'
-      }
+      },
+      priority: 'high',
+      type: 'alert',
+      sound: 'default',
+      data_only: false,
+      is_alarm: false,
+      urgent: false,
+      persistent: false
     })
   });
   
@@ -461,7 +498,13 @@ curl -X POST \
     "password": "userpassword",
     "title": "Test Notification",
     "body": "This is a test notification",
-    "priority": "high"
+    "priority": "high",
+    "type": "alert",
+    "sound": "default",
+    "data_only": false,
+    "is_alarm": false,
+    "urgent": false,
+    "persistent": false
   }'
 
 # Add device

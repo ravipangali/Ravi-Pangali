@@ -348,6 +348,7 @@ class PushNotification(models.Model):
     PRIORITY_CHOICES = [
         ('normal', 'Normal'),
         ('high', 'High'),
+        ('urgent', 'Urgent'),
     ]
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -362,6 +363,13 @@ class PushNotification(models.Model):
         default='high', 
         verbose_name='Priority'
     )
+    # New fields for enhanced notification features
+    notification_type = models.CharField(max_length=50, blank=True, null=True, verbose_name='Notification Type')
+    sound = models.CharField(max_length=50, blank=True, null=True, verbose_name='Sound')
+    data_only = models.BooleanField(default=False, verbose_name='Data Only')
+    is_alarm = models.BooleanField(default=False, verbose_name='Is Alarm')
+    urgent = models.BooleanField(default=False, verbose_name='Urgent')
+    persistent = models.BooleanField(default=False, verbose_name='Persistent')
     tokens_sent = models.PositiveIntegerField(default=0, verbose_name='Tokens Sent')
     tokens_delivered = models.PositiveIntegerField(default=0, verbose_name='Tokens Delivered')
     tokens_failed = models.PositiveIntegerField(default=0, verbose_name='Tokens Failed')
