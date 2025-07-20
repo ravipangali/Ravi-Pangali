@@ -145,6 +145,9 @@ class FirebaseService:
             message_data = data or {}
             message_data["timestamp"] = str(int(time.time()))
             
+            # Convert all data values to strings (FCM requirement)
+            message_data = {key: str(value) for key, value in message_data.items()}
+            
             # Add notification type and sound to data if provided
             if notification_type:
                 message_data["notification_type"] = notification_type
